@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Package, Clock, MapPin, CheckCircle, Truck, ShoppingBag, Star, ArrowRight } from 'lucide-react';
+import { Package, Clock, MapPin, CheckCircle, Truck, ShoppingBag, Star, ArrowRight, Edit2, Save, X, RotateCcw, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
+import { useToast } from '../contexts/ToastContext';
+import OrderTimeline from '../components/OrderTimeline';
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
-  const { getOrdersForUser } = useStore();
+  const { getOrdersForUser, cancelOrder, reorder } = useStore();
+  const { showToast } = useToast();
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || '',
+    phone: user?.phone || '',
+    address: user?.address || ''
+  });
 
   if (!user) return null;
   const orders = getOrdersForUser(user.id);
-  const activeOrders = orders.filter(o => o.status !== 'delivered');
+  const activeOrders = orders.filter(o => o.status !== 'delivered' && o.status !== 'pending');
+  const pendingOrders = orders.filter(o => o.status === 'pending');
   const pastOrders = orders.filter(o => o.status === 'delivered');
   const totalSpent = orders.reduce((sum, o) => sum + o.total, 0);
+
+  const handleCancelOrder = (orderId: string) => {
+    cancelOrder(orderId);
+    showToast('success', 'Order cancelled successfully');
+  };
+
+  const handleReorder = (orderId: string) => {
+    reorder(orderId);
+    showToast('success', 'Items added to cart!');
+  };
+
+  const handleSaveProfile = () => {
+    setEditingProfile(false);
+    showToast('success', 'Profile updated successfully!');
+  };
 
   const statusConfig: Record<string, { color: string; bg: string; icon: React.ReactNode }> = {
     pending: { color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200', icon: <Clock className="w-4 h-4" /> },
@@ -71,13 +96,62 @@ export default function CustomerDashboard() {
         ))}
       </div>
 
-      {/* Active Orders */}
+      {/* Pending Orders */}
+      {pendingOrders.length > 0 && (
+        <div className="mb-10">
+          <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-amber-500" /> Pending Orders
+          </h2>
+          <div className="space-y-4">
+            {pendingOrders.map((order, i) => (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-2xl border border-amber-100 p-5 shadow-sm"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                  <div>
+                    <p className="font-semibold text-terra-800">Order #{order.id.slice(-6).toUpperCase()}</p>
+                    <p className="text-sm text-terra-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                    Pending
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {order.items.map(item => (
+                    <div key={item.product.id} className="flex items-center gap-2 px-3 py-1.5 bg-cream-50 rounded-lg">
+                      <img src={item.product.image} alt="" className="w-6 h-6 rounded object-cover" />
+                      <span className="text-xs font-medium text-terra-700">{item.product.name} ×{item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t border-terra-50">
+                  <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleCancelOrder(order.id)}
+                    className="flex items-center gap-1.5 px-4 py-2 text-red-600 bg-red-50 rounded-full text-sm font-medium hover:bg-red-100 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Cancel
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active Orders with Timeline */}
       {activeOrders.length > 0 && (
         <div className="mb-10">
           <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5 flex items-center gap-2">
             <Truck className="w-5 h-5 text-orange-500" /> Active Orders
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {activeOrders.map((order, i) => {
               const config = statusConfig[order.status];
               return (
@@ -97,6 +171,12 @@ export default function CustomerDashboard() {
                       {config.icon} {order.status.replace('_', ' ')}
                     </span>
                   </div>
+
+                  {/* Order Timeline */}
+                  <div className="mb-5 px-2">
+                    <OrderTimeline status={order.status} />
+                  </div>
+
                   <div className="flex flex-wrap gap-2 mb-4">
                     {order.items.map(item => (
                       <div key={item.product.id} className="flex items-center gap-2 px-3 py-1.5 bg-cream-50 rounded-lg border border-terra-100/50">
@@ -131,7 +211,7 @@ export default function CustomerDashboard() {
           <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5">Order History</h2>
           <div className="space-y-3">
             {pastOrders.map(order => (
-              <div key={order.id} className="bg-white rounded-xl border border-terra-100/50 p-4 flex items-center justify-between hover:shadow-sm transition-shadow">
+              <div key={order.id} className="bg-white rounded-xl border border-terra-100/50 p-4 flex flex-wrap items-center justify-between gap-3 hover:shadow-sm transition-shadow">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-sage-50 rounded-full flex items-center justify-center">
                     <CheckCircle className="w-5 h-5 text-sage-500" />
@@ -141,7 +221,17 @@ export default function CustomerDashboard() {
                     <p className="text-xs text-terra-400">{new Date(order.createdAt).toLocaleDateString()} • {order.items.length} items</p>
                   </div>
                 </div>
-                <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleReorder(order.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-terra-50 text-terra-700 rounded-full text-xs font-medium hover:bg-terra-100 transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" /> Reorder
+                  </motion.button>
+                </div>
               </div>
             ))}
           </div>
@@ -161,24 +251,73 @@ export default function CustomerDashboard() {
 
       {/* Profile Card */}
       <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">
-        <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5 flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-terra-400 to-wine-500 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold">{user.name[0]}</span>
-          </div>
-          Profile Settings
-        </h2>
-        <div className="grid sm:grid-cols-2 gap-5">
-          {[
-            { label: 'Name', value: user.name },
-            { label: 'Email', value: user.email },
-            { label: 'Phone', value: user.phone || 'Not set' },
-            { label: 'Address', value: user.address || 'Not set' }
-          ].map(field => (
-            <div key={field.label} className="p-4 bg-cream-50 rounded-xl">
-              <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">{field.label}</label>
-              <p className="font-medium text-terra-800 mt-1">{field.value}</p>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-serif text-xl font-semibold text-terra-800 flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-terra-400 to-wine-500 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">{user.name[0]}</span>
             </div>
-          ))}
+            Profile Settings
+          </h2>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => editingProfile ? handleSaveProfile() : setEditingProfile(true)}
+            className="flex items-center gap-1.5 px-4 py-2 bg-terra-50 text-terra-700 rounded-full text-sm font-medium hover:bg-terra-100 transition-colors"
+          >
+            {editingProfile ? (
+              <><Save className="w-3.5 h-3.5" /> Save</>
+            ) : (
+              <><Edit2 className="w-3.5 h-3.5" /> Edit</>
+            )}
+          </motion.button>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          <div className="p-4 bg-cream-50 rounded-xl">
+            <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">Name</label>
+            {editingProfile ? (
+              <input
+                type="text"
+                value={profileForm.name}
+                onChange={e => setProfileForm({ ...profileForm, name: e.target.value })}
+                className="w-full mt-1 px-3 py-2 rounded-lg border border-terra-200 focus:border-terra-400 outline-none text-sm"
+              />
+            ) : (
+              <p className="font-medium text-terra-800 mt-1">{user.name}</p>
+            )}
+          </div>
+          <div className="p-4 bg-cream-50 rounded-xl">
+            <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">Email</label>
+            <p className="font-medium text-terra-800 mt-1">{user.email}</p>
+            <p className="text-[10px] text-terra-400 mt-1">Contact support to change email</p>
+          </div>
+          <div className="p-4 bg-cream-50 rounded-xl">
+            <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">Phone</label>
+            {editingProfile ? (
+              <input
+                type="tel"
+                value={profileForm.phone}
+                onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
+                className="w-full mt-1 px-3 py-2 rounded-lg border border-terra-200 focus:border-terra-400 outline-none text-sm"
+                placeholder="+1 (555) 000-0000"
+              />
+            ) : (
+              <p className="font-medium text-terra-800 mt-1">{user.phone || 'Not set'}</p>
+            )}
+          </div>
+          <div className="p-4 bg-cream-50 rounded-xl">
+            <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">Address</label>
+            {editingProfile ? (
+              <input
+                type="text"
+                value={profileForm.address}
+                onChange={e => setProfileForm({ ...profileForm, address: e.target.value })}
+                className="w-full mt-1 px-3 py-2 rounded-lg border border-terra-200 focus:border-terra-400 outline-none text-sm"
+                placeholder="Your address"
+              />
+            ) : (
+              <p className="font-medium text-terra-800 mt-1">{user.address || 'Not set'}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

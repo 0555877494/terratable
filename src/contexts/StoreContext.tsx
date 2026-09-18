@@ -7,6 +7,7 @@ interface StoreContextType {
   products: Product[];
   cart: CartItem[];
   orders: Order[];
+  wishlist: string[];
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -21,6 +22,11 @@ interface StoreContextType {
   assignDeliveryAgent: (orderId: string, agentId: string, agentName: string) => void;
   getOrdersForUser: (userId: string) => Order[];
   getOrdersForDelivery: (agentId: string) => Order[];
+  addToWishlist: (productId: string) => void;
+  removeFromWishlist: (productId: string) => void;
+  isInWishlist: (productId: string) => boolean;
+  cancelOrder: (orderId: string) => void;
+  reorder: (orderId: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -80,9 +86,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ];
   });
 
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    const saved = localStorage.getItem('terra_wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => { localStorage.setItem('terra_products', JSON.stringify(products)); }, [products]);
   useEffect(() => { localStorage.setItem('terra_cart', JSON.stringify(cart)); }, [cart]);
   useEffect(() => { localStorage.setItem('terra_orders', JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem('terra_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -152,11 +164,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const getOrdersForUser = (userId: string) => orders.filter(o => o.userId === userId);
   const getOrdersForDelivery = (agentId: string) => orders.filter(o => o.deliveryAgentId === agentId);
 
+  const addToWishlist = (productId: string) => {
+    setWishlist(prev => prev.includes(productId) ? prev : [...prev, productId]);
+  };
+
+  const removeFromWishlist = (productId: string) => {
+    setWishlist(prev => prev.filter(id => id !== productId));
+  };
+
+  const isInWishlist = (productId: string) => wishlist.includes(productId);
+
+  const cancelOrder = (orderId: string) => {
+    setOrders(prev => prev.filter(o => o.id !== orderId));
+  };
+
+  const reorder = (orderId: string) => {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.items.forEach(item => {
+        addToCart(item.product);
+      });
+    }
+  };
+
   return (
     <StoreContext.Provider value={{
-      products, cart, orders, addToCart, removeFromCart, updateQuantity, clearCart,
+      products, cart, orders, wishlist, addToCart, removeFromCart, updateQuantity, clearCart,
       cartTotal, cartCount, addProduct, updateProduct, deleteProduct,
-      placeOrder, updateOrderStatus, assignDeliveryAgent, getOrdersForUser, getOrdersForDelivery
+      placeOrder, updateOrderStatus, assignDeliveryAgent, getOrdersForUser, getOrdersForDelivery,
+      addToWishlist, removeFromWishlist, isInWishlist, cancelOrder, reorder
     }}>
       {children}
     </StoreContext.Provider>

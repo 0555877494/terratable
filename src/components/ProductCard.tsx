@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, Plus, Heart, ShoppingBag } from 'lucide-react';
 import { Product } from '../types';
 import { useStore } from '../contexts/StoreContext';
+import { useToast } from '../contexts/ToastContext';
 
 interface Props {
   product: Product;
@@ -11,11 +12,26 @@ interface Props {
 }
 
 export default function ProductCard({ product, onViewDetails, index }: Props) {
-  const { addToCart } = useStore();
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
+  const { showToast } = useToast();
+
+  const inWishlist = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product);
+    showToast('success', `${product.name} added to cart!`);
+  };
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+      showToast('info', `Removed from wishlist`);
+    } else {
+      addToWishlist(product.id);
+      showToast('success', `Added to wishlist!`);
+    }
   };
 
   return (
@@ -45,16 +61,17 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
           </span>
         </div>
 
-        {/* Quick actions on hover */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-9 h-9 glass rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
-          >
-            <Heart className="w-4 h-4 text-wine-600" />
-          </motion.button>
-        </div>
+        {/* Wishlist button - always visible if in wishlist, otherwise on hover */}
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleWishlist}
+          className={`absolute top-3 right-3 w-9 h-9 glass rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all ${
+            inWishlist ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          }`}
+        >
+          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-wine-600 text-wine-600' : 'text-wine-600'}`} />
+        </motion.button>
 
         {/* Bottom overlay content */}
         <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">

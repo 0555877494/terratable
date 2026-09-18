@@ -4,15 +4,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, MapPin, CheckCircle, Sparkles } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal, placeOrder } = useStore();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [address, setAddress] = useState(user?.address || '');
   const [paymentMethod, setPaymentMethod] = useState('Credit Card');
   const [orderPlaced, setOrderPlaced] = useState('');
+
+  const handleRemoveItem = (productId: string, productName: string) => {
+    removeFromCart(productId);
+    showToast('info', `${productName} removed from cart`);
+  };
 
   const handleCheckout = () => {
     if (!user) { navigate('/login'); return; }
@@ -152,7 +159,7 @@ export default function Cart() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          onClick={() => removeFromCart(item.product.id)}
+                          onClick={() => handleRemoveItem(item.product.id, item.product.name)}
                           className="p-2 text-terra-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
                         >
                           <Trash2 className="w-4 h-4" />

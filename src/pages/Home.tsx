@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart } from 'lucide-react';
 import { Product } from '../types';
 import { categories } from '../data/products';
@@ -11,17 +12,36 @@ export default function Home() {
   const { products } = useStore();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('default');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    let result = products.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
         p.description.toLowerCase().includes(search.toLowerCase()) ||
         p.origin.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [products, search, activeCategory]);
+
+    // Sort
+    switch (sortBy) {
+      case 'price-low':
+        result = [...result].sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        result = [...result].sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        result = [...result].sort((a, b) => b.rating - a.rating);
+        break;
+      case 'name':
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
+
+    return result;
+  }, [products, search, activeCategory, sortBy]);
 
   return (
     <div className="min-h-screen">
@@ -244,13 +264,26 @@ export default function Home() {
         </motion.div>
 
         {/* Products Grid */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <h3 className="font-serif text-xl font-semibold text-terra-800">
             {activeCategory === 'All' ? 'All Delicacies' : activeCategory}
           </h3>
-          <span className="text-sm text-terra-500 bg-terra-50 px-3 py-1 rounded-full">
-            {filteredProducts.length} items
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-terra-500 bg-terra-50 px-3 py-1 rounded-full">
+              {filteredProducts.length} items
+            </span>
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value)}
+              className="px-4 py-2 rounded-xl border border-terra-200 text-sm font-medium text-terra-700 bg-white focus:border-terra-400 focus:ring-2 focus:ring-terra-100 outline-none cursor-pointer"
+            >
+              <option value="default">Sort by: Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+              <option value="name">Name: A-Z</option>
+            </select>
+          </div>
         </div>
 
         <AnimatePresence mode="popLayout">
@@ -368,10 +401,10 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-white mb-4">Explore</h4>
               <div className="space-y-3 text-sm text-terra-400">
-                <p className="hover:text-white cursor-pointer transition-colors">All Products</p>
+                <Link to="/" className="block hover:text-white cursor-pointer transition-colors">All Products</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">New Arrivals</p>
                 <p className="hover:text-white cursor-pointer transition-colors">Gift Sets</p>
-                <p className="hover:text-white cursor-pointer transition-colors">Our Story</p>
+                <Link to="/about" className="block hover:text-white cursor-pointer transition-colors">Our Story</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">Blog</p>
               </div>
             </div>
@@ -379,7 +412,7 @@ export default function Home() {
               <h4 className="font-semibold text-white mb-4">Support</h4>
               <div className="space-y-3 text-sm text-terra-400">
                 <p className="hover:text-white cursor-pointer transition-colors">Shipping & Returns</p>
-                <p className="hover:text-white cursor-pointer transition-colors">Contact Us</p>
+                <Link to="/contact" className="block hover:text-white cursor-pointer transition-colors">Contact Us</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">FAQ</p>
                 <p className="hover:text-white cursor-pointer transition-colors">Privacy Policy</p>
               </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Package, ShoppingBag, TrendingUp, Edit, Trash2, Plus, X, Save, Truck, UserCheck, Shield } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { Product, UserRole, Order } from '../types';
@@ -117,6 +118,83 @@ export default function AdminDashboard() {
               <p className="text-sm text-terra-300">{orders.length} orders processed</p>
             </div>
           </motion.div>
+
+          {/* Analytics Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Revenue Chart */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm"
+            >
+              <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Revenue Trend</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={[
+                  { name: 'Mon', revenue: 120 },
+                  { name: 'Tue', revenue: 180 },
+                  { name: 'Wed', revenue: 150 },
+                  { name: 'Thu', revenue: 280 },
+                  { name: 'Fri', revenue: 320 },
+                  { name: 'Sat', revenue: 250 },
+                  { name: 'Sun', revenue: 190 }
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f2d9b4" />
+                  <XAxis dataKey="name" stroke="#864323" fontSize={12} />
+                  <YAxis stroke="#864323" fontSize={12} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #f2d9b4' }} />
+                  <Line type="monotone" dataKey="revenue" stroke="#d56120" strokeWidth={3} dot={{ fill: '#d56120', r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </motion.div>
+
+            {/* Orders by Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm"
+            >
+              <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Orders by Status</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Pending', value: orders.filter(o => o.status === 'pending').length || 1 },
+                      { name: 'Preparing', value: orders.filter(o => o.status === 'preparing').length || 1 },
+                      { name: 'Out for Delivery', value: orders.filter(o => o.status === 'out_for_delivery').length || 1 },
+                      { name: 'Delivered', value: orders.filter(o => o.status === 'delivered').length || 1 },
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    <Cell fill="#f59e0b" />
+                    <Cell fill="#8b5cf6" />
+                    <Cell fill="#f97316" />
+                    <Cell fill="#4e8644" />
+                  </Pie>
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #f2d9b4' }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap gap-3 justify-center mt-2">
+                {[
+                  { label: 'Pending', color: 'bg-amber-400' },
+                  { label: 'Preparing', color: 'bg-purple-500' },
+                  { label: 'Out for Delivery', color: 'bg-orange-500' },
+                  { label: 'Delivered', color: 'bg-sage-500' }
+                ].map(item => (
+                  <div key={item.label} className="flex items-center gap-1.5 text-xs text-terra-600">
+                    <div className={`w-2.5 h-2.5 rounded-full ${item.color}`} />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
 
           {/* Recent Orders */}
           <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">

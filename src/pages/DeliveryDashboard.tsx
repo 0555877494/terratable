@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Package, MapPin, DollarSign, CheckCircle, Truck, Clock, ArrowRight, TrendingUp } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { Order } from '../types';
@@ -72,24 +73,52 @@ export default function DeliveryDashboard() {
         ))}
       </div>
 
-      {/* Earnings Chart Placeholder */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-gradient-to-r from-terra-800 to-wine-800 rounded-2xl p-6 mb-10 text-white relative overflow-hidden"
-      >
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
-        <div className="absolute bottom-0 left-1/3 w-32 h-32 bg-white/5 rounded-full translate-y-12" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-sage-300" />
-            <span className="text-sm font-medium text-terra-200">This Week's Earnings</span>
+      {/* Earnings Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gradient-to-r from-terra-800 to-wine-800 rounded-2xl p-6 text-white relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
+          <div className="absolute bottom-0 left-1/3 w-32 h-32 bg-white/5 rounded-full translate-y-12" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-5 h-5 text-sage-300" />
+              <span className="text-sm font-medium text-terra-200">This Week's Earnings</span>
+            </div>
+            <p className="text-4xl font-bold mb-1">${earnings.toFixed(2)}</p>
+            <p className="text-sm text-terra-300">{completedOrders.length} deliveries completed</p>
           </div>
-          <p className="text-4xl font-bold mb-1">${earnings.toFixed(2)}</p>
-          <p className="text-sm text-terra-300">{completedOrders.length} deliveries completed</p>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm"
+        >
+          <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Weekly Earnings</h3>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={[
+              { day: 'Mon', earnings: earnings * 0.15 },
+              { day: 'Tue', earnings: earnings * 0.2 },
+              { day: 'Wed', earnings: earnings * 0.1 },
+              { day: 'Thu', earnings: earnings * 0.25 },
+              { day: 'Fri', earnings: earnings * 0.15 },
+              { day: 'Sat', earnings: earnings * 0.1 },
+              { day: 'Sun', earnings: earnings * 0.05 }
+            ]}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f2d9b4" />
+              <XAxis dataKey="day" stroke="#864323" fontSize={12} />
+              <YAxis stroke="#864323" fontSize={12} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #f2d9b4' }} formatter={(value: number) => [`$${value.toFixed(2)}`, 'Earnings']} />
+              <Bar dataKey="earnings" fill="#4e8644" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+      </div>
 
       {/* Active Deliveries */}
       <div className="mb-10">

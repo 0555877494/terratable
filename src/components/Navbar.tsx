@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Sparkles } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Sparkles, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 
@@ -90,6 +90,18 @@ export default function Navbar() {
               >
                 Shop
               </Link>
+              <Link
+                to="/about"
+                className="px-4 py-2 rounded-full text-sm font-medium text-terra-700 hover:bg-terra-50 hover:text-terra-900 transition-all"
+              >
+                About
+              </Link>
+              <Link
+                to="/contact"
+                className="px-4 py-2 rounded-full text-sm font-medium text-terra-700 hover:bg-terra-50 hover:text-terra-900 transition-all"
+              >
+                Contact
+              </Link>
 
               {user ? (
                 <div className="relative ml-2">
@@ -159,6 +171,17 @@ export default function Navbar() {
                   </Link>
                 </div>
               )}
+
+              {/* Wishlist */}
+              <Link to="/wishlist" className="relative ml-2">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="relative p-2.5 rounded-full bg-white/80 border border-terra-100 hover:border-terra-200 hover:shadow-md transition-all"
+                >
+                  <Heart className="w-5 h-5 text-wine-600" />
+                </motion.div>
+              </Link>
 
               {/* Cart */}
               <Link to="/cart" className="relative ml-2">
