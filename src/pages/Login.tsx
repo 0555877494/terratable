@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import Logo from '../components/Logo';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -59,10 +60,9 @@ export default function Login() {
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-              className="relative w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-amber-500/40"
+              className="relative mx-auto mb-6"
             >
-              <Sparkles className="w-9 h-9 text-white" />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent" />
+              <Logo className="w-20 h-20" />
             </motion.div>
             <h1 className="font-serif text-4xl font-bold text-stone-900 mb-3">Welcome Back</h1>
             <p className="text-stone-600 text-lg">Sign in to continue your culinary journey</p>

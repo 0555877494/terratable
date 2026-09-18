@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Sparkles, Heart } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
+import Logo from './Logo';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -69,10 +70,9 @@ export default function Navbar() {
             <Link to="/" className="flex items-center gap-3 group">
               <motion.div
                 whileHover={{ rotate: 10, scale: 1.1 }}
-                className="relative w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shadow-xl shadow-amber-500/30"
+                className="relative"
               >
-                <Sparkles className="w-6 h-6 text-white" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
+                <Logo className="w-12 h-12" />
               </motion.div>
               <div className="hidden sm:block">
                 <span className="font-serif text-2xl font-bold text-stone-800">

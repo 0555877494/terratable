@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart, Star, ShoppingBag, Sparkles } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart, Star, ShoppingBag } from 'lucide-react';
 import { Product } from '../types';
 import { categories } from '../data/products';
 import { useStore } from '../contexts/StoreContext';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
+import Logo from '../components/Logo';
 
 export default function Home() {
   const { products } = useStore();
@@ -85,7 +86,7 @@ export default function Home() {
                 transition={{ delay: 0.4 }}
                 className="inline-flex items-center gap-2 px-5 py-2.5 glass rounded-full text-sm font-semibold text-amber-100 mb-8 shadow-lg"
               >
-                <Sparkles className="w-4 h-4 text-amber-400" />
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                 Premium Artisan Foods
               </motion.span>
             </motion.div>
@@ -370,9 +371,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-xl">T</span>
-                </div>
+                <Logo className="w-12 h-12" />
                 <span className="font-serif text-2xl font-bold text-white">Terra & Table</span>
               </div>
               <p className="text-stone-400 text-base max-w-sm leading-relaxed mb-8">
