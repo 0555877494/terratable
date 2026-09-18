@@ -249,6 +249,33 @@ export default function CustomerDashboard() {
         </motion.div>
       )}
 
+      {/* Loyalty Program Link */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 rounded-2xl p-6 text-white mb-8 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h3 className="font-serif text-2xl font-bold mb-2">Loyalty Rewards</h3>
+            <p className="text-white/90 mb-4">Earn points on every purchase and unlock exclusive rewards</p>
+            <Link
+              to="/loyalty"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-amber-600 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+            >
+              View Rewards
+            </Link>
+          </div>
+          <div className="hidden sm:block">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
+              <Star className="w-10 h-10" />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Profile Card */}
       <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">

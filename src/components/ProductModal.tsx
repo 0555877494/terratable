@@ -4,6 +4,7 @@ import { X, Star, MapPin, Package, ShoppingBag, Heart, Share2, Minus, Plus } fro
 import { Product } from '../types';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
+import ProductReviews from './ProductReviews';
 
 interface Props {
   product: Product | null;
@@ -176,6 +177,11 @@ export default function ProductModal({ product, onClose }: Props) {
                   <ShoppingBag className="w-6 h-6" />
                   Add to Cart — ${(product.price * quantity).toFixed(2)}
                 </motion.button>
+              </div>
+
+              {/* Reviews Section */}
+              <div className="mt-8 pt-8 border-t-2 border-stone-200 dark:border-stone-700">
+                <ProductReviews productId={product.id} productName={product.name} />
               </div>
             </div>
           </div>

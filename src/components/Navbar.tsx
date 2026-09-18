@@ -122,6 +122,12 @@ export default function Navbar() {
               >
                 Recipes
               </Link>
+              <Link
+                to="/loyalty"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Rewards
+              </Link>
 
               {user ? (
                 <div className="relative ml-3">

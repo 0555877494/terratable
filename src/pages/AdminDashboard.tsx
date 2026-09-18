@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Package, ShoppingBag, TrendingUp, Edit, Trash2, Plus, X, Save, Truck, UserCheck, Shield } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { Users, Package, ShoppingBag, TrendingUp, Edit, Trash2, Plus, X, Save, Truck, UserCheck, Shield, BarChart3 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { Product, UserRole, Order } from '../types';
 
-type Tab = 'overview' | 'users' | 'products' | 'orders';
+type Tab = 'overview' | 'analytics' | 'users' | 'products' | 'orders';
 
 export default function AdminDashboard() {
   const { users, updateUserRole, deleteUser } = useAuth();
@@ -22,6 +22,7 @@ export default function AdminDashboard() {
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'overview', label: 'Overview', icon: <TrendingUp className="w-4 h-4" /> },
+    { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'Users', icon: <Users className="w-4 h-4" />, count: users.length },
     { id: 'products', label: 'Products', icon: <Package className="w-4 h-4" />, count: products.length },
     { id: 'orders', label: 'Orders', icon: <ShoppingBag className="w-4 h-4" />, count: orders.length },
@@ -227,6 +228,158 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {[
+              { label: 'Total Revenue', value: `$${totalRevenue.toFixed(0)}`, icon: <TrendingUp className="w-5 h-5" />, gradient: 'from-sage-500 to-sage-600' },
+              { label: 'Orders', value: orders.length, icon: <ShoppingBag className="w-5 h-5" />, gradient: 'from-terra-500 to-terra-600' },
+              { label: 'Customers', value: customers.length, icon: <Users className="w-5 h-5" />, gradient: 'from-blue-500 to-blue-600' },
+              { label: 'Products', value: products.length, icon: <Package className="w-5 h-5" />, gradient: 'from-purple-500 to-purple-600' }
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="relative bg-white rounded-2xl border border-terra-100/50 p-5 shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center text-white shadow-lg`}>
+                    {stat.icon}
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-terra-800">{stat.value}</p>
+                    <p className="text-xs text-terra-500 font-medium">{stat.label}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Revenue Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm mb-6"
+          >
+            <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Revenue Trend</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={[
+                { name: 'Jan', revenue: 4200, orders: 42 },
+                { name: 'Feb', revenue: 5800, orders: 58 },
+                { name: 'Mar', revenue: 6100, orders: 61 },
+                { name: 'Apr', revenue: 7500, orders: 75 },
+                { name: 'May', revenue: 8200, orders: 82 },
+                { name: 'Jun', revenue: 9100, orders: 91 }
+              ]}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#d56120" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#d56120" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f2d9b4" />
+                <XAxis dataKey="name" stroke="#864323" />
+                <YAxis stroke="#864323" />
+                <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #f2d9b4' }} />
+                <Area type="monotone" dataKey="revenue" stroke="#d56120" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Category Distribution & Top Products */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm"
+            >
+              <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Sales by Category</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Pantry', value: 35 },
+                      { name: 'Beverages', value: 25 },
+                      { name: 'Spices', value: 20 },
+                      { name: 'Confections', value: 12 },
+                      { name: 'Oils', value: 8 }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    <Cell fill="#f59e0b" />
+                    <Cell fill="#10b981" />
+                    <Cell fill="#ef4444" />
+                    <Cell fill="#8b5cf6" />
+                    <Cell fill="#3b82f6" />
+                  </Pie>
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #f2d9b4' }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {[
+                  { name: 'Pantry', color: '#f59e0b', value: 35 },
+                  { name: 'Beverages', color: '#10b981', value: 25 },
+                  { name: 'Spices', color: '#ef4444', value: 20 },
+                  { name: 'Confections', color: '#8b5cf6', value: 12 },
+                  { name: 'Oils', color: '#3b82f6', value: 8 }
+                ].map((item) => (
+                  <div key={item.name} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="text-sm text-terra-600">{item.name} ({item.value}%)</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm"
+            >
+              <h3 className="font-serif text-lg font-semibold text-terra-800 mb-4">Top Selling Products</h3>
+              <div className="space-y-4">
+                {[
+                  { name: 'Tuscan Wildflower Honey', sales: 145, revenue: 3624.55 },
+                  { name: 'Japanese Matcha Powder', sales: 128, revenue: 4928.00 },
+                  { name: 'Artisan Dark Chocolate', sales: 112, revenue: 2100.00 },
+                  { name: 'Truffle Infused Olive Oil', sales: 98, revenue: 4704.00 },
+                  { name: 'Saffron Threads Premium', sales: 87, revenue: 4872.00 }
+                ].map((product, index) => (
+                  <motion.div
+                    key={product.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1 }}
+                    className="flex items-center gap-4"
+                  >
+                    <div className="w-8 h-8 gradient-bg rounded-full flex items-center justify-center text-white font-bold text-sm">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-terra-800 text-sm">{product.name}</p>
+                      <p className="text-xs text-terra-500">{product.sales} sales</p>
+                    </div>
+                    <p className="font-bold text-terra-800">${product.revenue.toFixed(2)}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       )}

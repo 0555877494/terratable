@@ -1,13 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart, Star, ShoppingBag } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart, Star, ShoppingBag, Filter } from 'lucide-react';
 import { Product } from '../types';
 import { categories } from '../data/products';
 import { useStore } from '../contexts/StoreContext';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import RecentlyViewed from '../components/RecentlyViewed';
+import AdvancedSearch from '../components/AdvancedSearch';
 import Logo from '../components/Logo';
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('default');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
   const filteredProducts = useMemo(() => {
     let result = products.filter(p => {
@@ -249,6 +251,15 @@ export default function Home() {
                   {cat}
                 </motion.button>
               ))}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAdvancedSearch(true)}
+                className="px-6 py-3 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-stone-800 text-white hover:bg-stone-900 flex items-center gap-2 shadow-lg"
+              >
+                <Filter className="w-4 h-4" />
+                Advanced
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -420,6 +431,19 @@ export default function Home() {
 
       {/* Product Modal */}
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+
+      {/* Advanced Search Modal */}
+      <AnimatePresence>
+        {showAdvancedSearch && (
+          <AdvancedSearch
+            onClose={() => setShowAdvancedSearch(false)}
+            onViewDetails={(product) => {
+              setSelectedProduct(product);
+              setShowAdvancedSearch(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

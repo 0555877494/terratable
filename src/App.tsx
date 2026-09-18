@@ -20,6 +20,7 @@ import OrderTracking from './pages/OrderTracking';
 import ReferralProgram from './pages/ReferralProgram';
 import Blog from './pages/Blog';
 import AddressBook from './pages/AddressBook';
+import LoyaltyProgram from './pages/LoyaltyProgram';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -62,6 +63,7 @@ function AppRoutes() {
           <Route path="/referral" element={<ReferralProgram />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/addresses" element={<AddressBook />} />
+          <Route path="/loyalty" element={<LoyaltyProgram />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={
