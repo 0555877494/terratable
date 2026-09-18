@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme {
+  --color-terra-50: #fef9f3;
+  --color-terra-100: #fcefe0;
+  --color-terra-200: #f8d9b8;
+  --color-terra-300: #f2bc85;
+  --color-terra-400: #ea9650;
+  --color-terra-500: #e47a2b;
+  --color-terra-600: #d56120;
+  --color-terra-700: #b14a1c;
+  --color-terra-800: #8e3c1d;
+  --color-terra-900: #73331b;
+  --color-terra-950: #3e190c;
+  --color-sage-50: #f3f7f2;
+  --color-sage-100: #e2eddf;
+  --color-sage-200: #c6dbc0;
+  --color-sage-300: #9ec296;
+  --color-sage-400: #71a366;
+  --color-sage-500: #4e8644;
+  --color-sage-600: #3c6b34;
+  --color-sage-700: #32552b;
+  --color-sage-800: #2a4425;
+  --color-sage-900: #233820;
+  --color-sage-950: #101e10;
+  --color-cream-50: #fffefb;
+  --color-cream-100: #fef9f0;
+  --color-cream-200: #fcf2e1;
+  --color-cream-300: #f9e6c8;
+  --color-cream-400: #f4d4a3;
+  --color-cream-500: #edc07e;
+  --color-gold-50: #fefce8;
+  --color-gold-100: #fef9c3;
+  --color-gold-200: #fef08a;
+  --color-gold-300: #fde047;
+  --color-gold-400: #facc15;
+  --color-gold-500: #eab308;
+  --color-wine-50: #fdf2f4;
+  --color-wine-100: #fce7eb;
+  --color-wine-200: #f9d0d9;
+  --color-wine-300: #f4a9ba;
+  --color-wine-400: #ec7694;
+  --color-wine-500: #df4a70;
+  --color-wine-600: #cc2d57;
+  --color-wine-700: #ab1f45;
+  --color-wine-800: #8f1d3c;
+  --color-wine-900: #7a1c37;
+  --color-wine-950: #440a1a;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--color-cream-50);
+    color: var(--color-terra-950);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  ::selection {
+    background-color: var(--color-terra-200);
+    color: var(--color-terra-900);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .glass-dark {
+    background: rgba(62, 25, 12, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(3deg); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-2deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
