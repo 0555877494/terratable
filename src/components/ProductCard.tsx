@@ -55,10 +55,27 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         {/* Top badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
           <span className="px-4 py-2 glass rounded-full text-xs font-bold text-stone-800 shadow-lg">
             {product.category}
           </span>
+          {product.badge && (
+            <motion.span
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg ${
+                product.badge === 'new' ? 'bg-emerald-500 text-white' :
+                product.badge === 'sale' ? 'bg-rose-500 text-white' :
+                product.badge === 'bestseller' ? 'bg-amber-500 text-white' :
+                'bg-purple-500 text-white'
+              }`}
+            >
+              {product.badge === 'new' && '✨ New'}
+              {product.badge === 'sale' && `🔥 ${product.discount}% OFF`}
+              {product.badge === 'bestseller' && '⭐ Bestseller'}
+              {product.badge === 'limited' && '💎 Limited'}
+            </motion.span>
+          )}
         </div>
 
         {/* Wishlist button */}
@@ -125,9 +142,21 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
         <div className="flex items-center justify-between pt-5 border-t border-stone-100">
           <div>
             <span className="text-xs text-stone-400 uppercase tracking-wider font-semibold">Price</span>
-            <p className="text-2xl font-bold gradient-text">
-              ${product.price.toFixed(2)}
-            </p>
+            <div className="flex items-baseline gap-2">
+              <p className="text-2xl font-bold gradient-text">
+                ${product.price.toFixed(2)}
+              </p>
+              {product.originalPrice && (
+                <p className="text-sm text-stone-400 line-through">
+                  ${product.originalPrice.toFixed(2)}
+                </p>
+              )}
+            </div>
+            {product.stock && product.stock < 10 && (
+              <p className="text-xs text-rose-600 font-semibold mt-1">
+                Only {product.stock} left!
+              </p>
+            )}
           </div>
           <motion.button
             whileHover={{ scale: 1.05 }}

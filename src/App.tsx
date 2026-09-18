@@ -5,6 +5,8 @@ import { StoreProvider } from './contexts/StoreContext';
 import { ToastProvider } from './contexts/ToastContext';
 import Navbar from './components/Navbar';
 import BackToTop from './components/BackToTop';
+import AnnouncementBanner from './components/AnnouncementBanner';
+import LiveChat from './components/LiveChat';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -34,8 +36,10 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
 function AppRoutes() {
   return (
     <div className="min-h-screen bg-cream-50">
+      <AnnouncementBanner />
       <Navbar />
       <BackToTop />
+      <LiveChat />
       <main className="pt-[72px]">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -5,6 +5,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, MapPin, CheckC
 import { useStore } from '../contexts/StoreContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import CouponInput from '../components/CouponInput';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal, placeOrder } = useStore();
@@ -300,32 +301,38 @@ export default function Cart() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl border border-terra-100/50 p-6 sticky top-24 shadow-sm">
-            <h3 className="font-serif text-lg font-semibold text-terra-800 mb-5 flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-terra-500" /> Order Summary
-            </h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between text-terra-600">
-                <span>Subtotal ({cart.reduce((s, i) => s + i.quantity, 0)} items)</span>
-                <span className="font-medium">${cartTotal.toFixed(2)}</span>
+          <div className="space-y-4 sticky top-24">
+            {/* Coupon Input */}
+            <CouponInput />
+
+            {/* Order Summary */}
+            <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">
+              <h3 className="font-serif text-lg font-semibold text-terra-800 mb-5 flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5 text-terra-500" /> Order Summary
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-terra-600">
+                  <span>Subtotal ({cart.reduce((s, i) => s + i.quantity, 0)} items)</span>
+                  <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-terra-600">
+                  <span>Shipping</span>
+                  <span className="text-sage-600 font-medium">Free ✨</span>
+                </div>
+                <div className="flex justify-between text-terra-600">
+                  <span>Estimated Tax</span>
+                  <span className="font-medium">${(cartTotal * 0.08).toFixed(2)}</span>
+                </div>
+                <div className="border-t border-terra-100 pt-3 mt-3 flex justify-between">
+                  <span className="font-bold text-terra-800 text-lg">Total</span>
+                  <span className="font-bold text-xl bg-gradient-to-r from-terra-700 to-wine-700 bg-clip-text text-transparent">
+                    ${(cartTotal * 1.08).toFixed(2)}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between text-terra-600">
-                <span>Shipping</span>
-                <span className="text-sage-600 font-medium">Free ✨</span>
+              <div className="mt-5 p-3 bg-sage-50 rounded-xl">
+                <p className="text-xs text-sage-700 text-center">🔒 Secure checkout • Free returns within 30 days</p>
               </div>
-              <div className="flex justify-between text-terra-600">
-                <span>Estimated Tax</span>
-                <span className="font-medium">${(cartTotal * 0.08).toFixed(2)}</span>
-              </div>
-              <div className="border-t border-terra-100 pt-3 mt-3 flex justify-between">
-                <span className="font-bold text-terra-800 text-lg">Total</span>
-                <span className="font-bold text-xl bg-gradient-to-r from-terra-700 to-wine-700 bg-clip-text text-transparent">
-                  ${(cartTotal * 1.08).toFixed(2)}
-                </span>
-              </div>
-            </div>
-            <div className="mt-5 p-3 bg-sage-50 rounded-xl">
-              <p className="text-xs text-sage-700 text-center">🔒 Secure checkout • Free returns within 30 days</p>
             </div>
           </div>
         </div>

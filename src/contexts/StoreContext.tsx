@@ -1,13 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CartItem, Product, Order } from '../types';
+import { CartItem, Product, Order, Review, Coupon } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { products as defaultProducts } from '../data/products';
+import { products as defaultProducts, sampleCoupons, sampleReviews } from '../data/products';
 
 interface StoreContextType {
   products: Product[];
   cart: CartItem[];
   orders: Order[];
   wishlist: string[];
+  reviews: Review[];
+  coupons: Coupon[];
+  recentlyViewed: string[];
+  loyaltyPoints: number;
+  appliedCoupon: Coupon | null;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -27,6 +32,13 @@ interface StoreContextType {
   isInWishlist: (productId: string) => boolean;
   cancelOrder: (orderId: string) => void;
   reorder: (orderId: string) => void;
+  addReview: (review: Omit<Review, 'id'>) => void;
+  getReviewsForProduct: (productId: string) => Review[];
+  applyCoupon: (code: string) => { success: boolean; message: string };
+  removeCoupon: () => void;
+  discountedTotal: number;
+  addToRecentlyViewed: (productId: string) => void;
+  getRelatedProducts: (productId: string) => Product[];
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -91,10 +103,32 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    const saved = localStorage.getItem('terra_reviews');
+    return saved ? JSON.parse(saved) : sampleReviews;
+  });
+
+  const [coupons] = useState<Coupon[]>(sampleCoupons);
+
+  const [recentlyViewed, setRecentlyViewed] = useState<string[]>(() => {
+    const saved = localStorage.getItem('terra_recently_viewed');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [loyaltyPoints, setLoyaltyPoints] = useState<number>(() => {
+    const saved = localStorage.getItem('terra_loyalty_points');
+    return saved ? parseInt(saved) : 250;
+  });
+
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+
   useEffect(() => { localStorage.setItem('terra_products', JSON.stringify(products)); }, [products]);
   useEffect(() => { localStorage.setItem('terra_cart', JSON.stringify(cart)); }, [cart]);
   useEffect(() => { localStorage.setItem('terra_orders', JSON.stringify(orders)); }, [orders]);
   useEffect(() => { localStorage.setItem('terra_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
+  useEffect(() => { localStorage.setItem('terra_reviews', JSON.stringify(reviews)); }, [reviews]);
+  useEffect(() => { localStorage.setItem('terra_recently_viewed', JSON.stringify(recentlyViewed)); }, [recentlyViewed]);
+  useEffect(() => { localStorage.setItem('terra_loyalty_points', loyaltyPoints.toString()); }, [loyaltyPoints]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -187,12 +221,55 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addReview = (review: Omit<Review, 'id'>) => {
+    const newReview: Review = { ...review, id: uuidv4() };
+    setReviews(prev => [newReview, ...prev]);
+  };
+
+  const getReviewsForProduct = (productId: string) => reviews.filter(r => r.productId === productId);
+
+  const applyCoupon = (code: string) => {
+    const coupon = coupons.find(c => c.code.toLowerCase() === code.toLowerCase() && c.active);
+    if (!coupon) return { success: false, message: 'Invalid coupon code' };
+    if (coupon.minOrder && cartTotal < coupon.minOrder) {
+      return { success: false, message: `Minimum order of $${coupon.minOrder} required` };
+    }
+    setAppliedCoupon(coupon);
+    return { success: true, message: `Coupon applied! ${coupon.type === 'percentage' ? `${coupon.discount}% off` : `$${coupon.discount} off`}` };
+  };
+
+  const removeCoupon = () => setAppliedCoupon(null);
+
+  const discountedTotal = (() => {
+    if (!appliedCoupon) return cartTotal;
+    if (appliedCoupon.type === 'percentage') {
+      return cartTotal * (1 - appliedCoupon.discount / 100);
+    }
+    return Math.max(0, cartTotal - appliedCoupon.discount);
+  })();
+
+  const addToRecentlyViewed = (productId: string) => {
+    setRecentlyViewed(prev => {
+      const filtered = prev.filter(id => id !== productId);
+      return [productId, ...filtered].slice(0, 10);
+    });
+  };
+
+  const getRelatedProducts = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return [];
+    return products.filter(p => p.id !== productId && p.category === product.category).slice(0, 4);
+  };
+
   return (
     <StoreContext.Provider value={{
-      products, cart, orders, wishlist, addToCart, removeFromCart, updateQuantity, clearCart,
+      products, cart, orders, wishlist, reviews, coupons, recentlyViewed, loyaltyPoints, appliedCoupon,
+      addToCart, removeFromCart, updateQuantity, clearCart,
       cartTotal, cartCount, addProduct, updateProduct, deleteProduct,
       placeOrder, updateOrderStatus, assignDeliveryAgent, getOrdersForUser, getOrdersForDelivery,
-      addToWishlist, removeFromWishlist, isInWishlist, cancelOrder, reorder
+      addToWishlist, removeFromWishlist, isInWishlist, cancelOrder, reorder,
+      addReview, getReviewsForProduct, applyCoupon, removeCoupon, discountedTotal,
+      addToRecentlyViewed, getRelatedProducts
     }}>
       {children}
     </StoreContext.Provider>

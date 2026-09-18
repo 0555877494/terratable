@@ -17,13 +17,38 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
   category: string;
   image: string;
+  images?: string[];
   rating: number;
   reviews: number;
   origin: string;
   weight: string;
   inStock: boolean;
+  badge?: 'new' | 'sale' | 'bestseller' | 'limited';
+  discount?: number;
+  stock?: number;
+}
+
+export interface Review {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+  helpful: number;
+}
+
+export interface Coupon {
+  code: string;
+  discount: number;
+  type: 'percentage' | 'fixed';
+  minOrder?: number;
+  expiresAt?: string;
+  active: boolean;
 }
 
 export interface CartItem {
