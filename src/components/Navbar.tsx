@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { useTheme } from '../contexts/ThemeContext';
 import Logo from './Logo';
+import LanguageCurrencySwitcher from './LanguageCurrencySwitcher';
+import NotificationCenter from './NotificationCenter';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -128,6 +130,12 @@ export default function Navbar() {
               >
                 Rewards
               </Link>
+              <Link
+                to="/bundles"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Bundles
+              </Link>
 
               {user ? (
                 <div className="relative ml-3">
@@ -212,6 +220,16 @@ export default function Navbar() {
                   <Sun className="w-5 h-5 text-amber-500" />
                 )}
               </motion.button>
+
+              {/* Language & Currency Switcher */}
+              <div className="ml-3">
+                <LanguageCurrencySwitcher />
+              </div>
+
+              {/* Notification Center */}
+              <div className="ml-3">
+                <NotificationCenter />
+              </div>
 
               {/* Wishlist */}
               <Link to="/wishlist" className="relative ml-3">

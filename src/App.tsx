@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { StoreProvider } from './contexts/StoreContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { I18nProvider } from './contexts/I18nContext';
 import Navbar from './components/Navbar';
 import BackToTop from './components/BackToTop';
 import AnnouncementBanner from './components/AnnouncementBanner';
@@ -21,6 +22,7 @@ import ReferralProgram from './pages/ReferralProgram';
 import Blog from './pages/Blog';
 import AddressBook from './pages/AddressBook';
 import LoyaltyProgram from './pages/LoyaltyProgram';
+import ProductBundles from './pages/ProductBundles';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -64,6 +66,7 @@ function AppRoutes() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/addresses" element={<AddressBook />} />
           <Route path="/loyalty" element={<LoyaltyProgram />} />
+          <Route path="/bundles" element={<ProductBundles />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={
@@ -91,15 +94,17 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <StoreProvider>
-              <AppRoutes />
-            </StoreProvider>
-          </ToastProvider>
-        </AuthProvider>
-      </ThemeProvider>
+      <I18nProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <StoreProvider>
+                <AppRoutes />
+              </StoreProvider>
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </I18nProvider>
     </BrowserRouter>
   );
 }
