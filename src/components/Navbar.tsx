@@ -110,6 +110,18 @@ export default function Navbar() {
               >
                 Gift Cards
               </Link>
+              <Link
+                to="/subscriptions"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Subscriptions
+              </Link>
+              <Link
+                to="/blog"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Recipes
+              </Link>
 
               {user ? (
                 <div className="relative ml-3">

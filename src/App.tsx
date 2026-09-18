@@ -15,6 +15,11 @@ import Signup from './pages/Signup';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import GiftCards from './pages/GiftCards';
+import Subscriptions from './pages/Subscriptions';
+import OrderTracking from './pages/OrderTracking';
+import ReferralProgram from './pages/ReferralProgram';
+import Blog from './pages/Blog';
+import AddressBook from './pages/AddressBook';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -52,6 +57,11 @@ function AppRoutes() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/gift-cards" element={<GiftCards />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
+          <Route path="/order-tracking" element={<OrderTracking />} />
+          <Route path="/referral" element={<ReferralProgram />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/addresses" element={<AddressBook />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={

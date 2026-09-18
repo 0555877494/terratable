@@ -395,6 +395,8 @@ export default function Home() {
                 <Link to="/" className="block hover:text-white cursor-pointer transition-colors">All Products</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">New Arrivals</p>
                 <Link to="/gift-cards" className="block hover:text-white cursor-pointer transition-colors">Gift Cards</Link>
+                <Link to="/subscriptions" className="block hover:text-white cursor-pointer transition-colors">Subscriptions</Link>
+                <Link to="/blog" className="block hover:text-white cursor-pointer transition-colors">Recipes & Blog</Link>
                 <Link to="/about" className="block hover:text-white cursor-pointer transition-colors">Our Story</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">Blog</p>
               </div>
