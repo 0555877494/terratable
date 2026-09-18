@@ -202,6 +202,7 @@ export default function Cart() {
                 <div className="bg-white rounded-2xl border border-terra-100/50 p-6 space-y-3 shadow-sm">
                   {[
                     { method: 'Credit Card', icon: '💳', desc: 'Visa, Mastercard, Amex' },
+                    { method: 'Mobile Money (MoMo)', icon: '📱', desc: 'MTN, Vodafone, AirtelTigo' },
                     { method: 'PayPal', icon: '🅿️', desc: 'Pay with your PayPal account' },
                     { method: 'Apple Pay', icon: '🍎', desc: 'Quick & secure checkout' }
                   ].map(({ method, icon, desc }) => (
@@ -226,6 +227,28 @@ export default function Cart() {
                     </motion.label>
                   ))}
                 </div>
+
+                {/* MoMo Phone Number Input */}
+                {paymentMethod === 'Mobile Money (MoMo)' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mt-4 bg-sage-50 rounded-2xl border border-sage-200 p-5"
+                  >
+                    <label className="block text-sm font-semibold text-sage-800 mb-2">
+                      📱 Mobile Money Number
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="e.g., 024 XXX XXXX"
+                      className="w-full px-4 py-3 rounded-xl border border-sage-200 focus:border-sage-400 focus:ring-4 focus:ring-sage-50 outline-none bg-white text-sage-800 placeholder:text-sage-400"
+                    />
+                    <div className="mt-3 flex items-start gap-2 text-xs text-sage-700">
+                      <span className="text-sage-500">ℹ️</span>
+                      <p>You will receive a payment prompt on your phone. Please approve the transaction to complete your order.</p>
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
