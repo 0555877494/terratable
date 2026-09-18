@@ -90,31 +90,30 @@ export default function Cart() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       {/* Progress */}
-      <div className="flex items-center justify-center gap-3 mb-10">
-        {['Cart', 'Address', 'Payment'].map((label, i) => (
-          <React.Fragment key={label}>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className={`flex items-center gap-2 ${step >= i ? 'text-terra-700' : 'text-terra-300'}`}
-            >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                step >= i
-                  ? 'bg-gradient-to-br from-terra-500 to-wine-600 text-white shadow-lg shadow-terra-500/20'
-                  : 'bg-terra-100 text-terra-400'
-              }`}>
-                {step > i ? '✓' : i + 1}
-              </div>
-              <span className="hidden sm:inline text-sm font-medium">{label}</span>
-            </motion.div>
-            {i < 2 && (
-              <div className={`w-12 sm:w-20 h-1 rounded-full transition-all ${step > i ? 'bg-gradient-to-r from-terra-400 to-wine-400' : 'bg-terra-100'}`} />
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-
+                <div className="flex items-center justify-center gap-3 mb-10">
+                  {['Cart', 'Address', 'Payment'].map((label, i) => (
+                    <React.Fragment key={label}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className={`flex items-center gap-2 ${step >= i ? 'text-stone-700' : 'text-stone-300'}`}
+                      >
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                          step >= i
+                            ? 'gradient-bg text-white shadow-lg shadow-amber-500/20'
+                            : 'bg-stone-100 text-stone-400'
+                        }`}>
+                          {step > i ? '✓' : i + 1}
+                        </div>
+                        <span className="hidden sm:inline text-sm font-medium">{label}</span>
+                      </motion.div>
+                      {i < 2 && (
+                        <div className={`w-12 sm:w-20 h-1 rounded-full transition-all ${step > i ? 'gradient-bg' : 'bg-stone-100'}`} />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2">

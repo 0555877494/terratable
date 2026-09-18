@@ -35,13 +35,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-16 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-terra-50 via-cream-100 to-wine-50" />
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-terra-200/40 rounded-full blur-[80px]" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-wine-200/30 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-sage-200/30 rounded-full blur-[80px]" />
+        <img 
+          src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80" 
+          alt="" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-950/90 via-stone-900/80 to-amber-950/70" />
       </div>
 
       <motion.div
@@ -50,20 +52,20 @@ export default function Login() {
         transition={{ duration: 0.6, type: 'spring' }}
         className="relative w-full max-w-md"
       >
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-terra-200/30 border border-white/50 p-8 sm:p-10">
+        <div className="glass rounded-3xl shadow-2xl p-10">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-              className="relative w-16 h-16 bg-gradient-to-br from-terra-500 via-terra-600 to-wine-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-terra-500/30"
+              className="relative w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-amber-500/40"
             >
-              <Sparkles className="w-7 h-7 text-white" />
+              <Sparkles className="w-9 h-9 text-white" />
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent" />
             </motion.div>
-            <h1 className="font-serif text-3xl font-bold text-terra-900 mb-2">Welcome Back</h1>
-            <p className="text-terra-500">Sign in to continue your culinary journey</p>
+            <h1 className="font-serif text-4xl font-bold text-stone-900 mb-3">Welcome Back</h1>
+            <p className="text-stone-600 text-lg">Sign in to continue your culinary journey</p>
           </div>
 
           {/* Error */}
@@ -72,46 +74,46 @@ export default function Login() {
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: -10, height: 0 }}
-              className="mb-5 p-4 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-600 flex items-center gap-2"
+              className="mb-6 p-4 bg-rose-50 border-2 border-rose-200 rounded-2xl text-sm text-rose-700 flex items-center gap-3"
             >
-              <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-xs">!</span>
+              <div className="w-6 h-6 bg-rose-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold">!</span>
               </div>
               {error}
             </motion.div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-2">Email Address</label>
+              <label className="block text-sm font-bold text-stone-700 mb-2">Email Address</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-terra-400 group-focus-within:text-terra-600 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-amber-600 transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-terra-100 focus:border-terra-300 focus:ring-4 focus:ring-terra-50 outline-none transition-all bg-white/50 text-terra-800 placeholder:text-terra-400"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-stone-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-base"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-2">Password</label>
+              <label className="block text-sm font-bold text-stone-700 mb-2">Password</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-terra-400 group-focus-within:text-terra-600 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-amber-600 transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="w-full pl-11 pr-11 py-3.5 rounded-xl border border-terra-100 focus:border-terra-300 focus:ring-4 focus:ring-terra-50 outline-none transition-all bg-white/50 text-terra-800 placeholder:text-terra-400"
+                  className="w-full pl-12 pr-12 py-4 rounded-xl border-2 border-stone-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-base"
                   placeholder="••••••••"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-terra-400 hover:text-terra-600 transition-colors">
-                  {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors">
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -121,33 +123,33 @@ export default function Login() {
               whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-terra-600 via-terra-700 to-wine-700 text-white rounded-xl font-semibold text-base shadow-xl shadow-terra-500/20 hover:shadow-2xl hover:shadow-terra-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+              className="w-full py-4 gradient-bg text-white rounded-xl font-bold text-lg shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <>Sign In <ArrowRight className="w-4 h-4" /></>
+                <>Sign In <ArrowRight className="w-5 h-5" /></>
               )}
             </motion.button>
           </form>
 
           {/* Demo accounts */}
-          <div className="mt-6 p-4 bg-gradient-to-r from-cream-100 to-terra-50 rounded-2xl border border-terra-100/50">
-            <p className="text-xs font-semibold text-terra-600 mb-2.5 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 bg-sage-400 rounded-full" />
+          <div className="mt-7 p-5 bg-amber-50 rounded-2xl border-2 border-amber-200">
+            <p className="text-xs font-bold text-amber-800 mb-3 flex items-center gap-2">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full" />
               Quick Demo Access
             </p>
-            <div className="space-y-1.5 text-xs text-terra-600">
-              <p className="flex justify-between"><span className="font-medium">Admin:</span> <span className="text-terra-500">admin@terra.com / admin123</span></p>
-              <p className="flex justify-between"><span className="font-medium">Customer:</span> <span className="text-terra-500">sarah@email.com / customer123</span></p>
-              <p className="flex justify-between"><span className="font-medium">Delivery:</span> <span className="text-terra-500">marcus@email.com / delivery123</span></p>
+            <div className="space-y-2 text-xs text-stone-700">
+              <p className="flex justify-between"><span className="font-bold">Admin:</span> <span className="text-stone-600">admin@terra.com / admin123</span></p>
+              <p className="flex justify-between"><span className="font-bold">Customer:</span> <span className="text-stone-600">sarah@email.com / customer123</span></p>
+              <p className="flex justify-between"><span className="font-bold">Delivery:</span> <span className="text-stone-600">marcus@email.com / delivery123</span></p>
             </div>
           </div>
 
           {/* Footer */}
-          <p className="text-center text-sm text-terra-500 mt-6">
+          <p className="text-center text-stone-600 mt-7">
             New here?{' '}
-            <Link to="/signup" className="text-terra-700 font-semibold hover:text-terra-900 transition-colors">Create an account</Link>
+            <Link to="/signup" className="text-amber-700 font-bold hover:text-amber-800 transition-colors">Create an account</Link>
           </p>
         </div>
       </motion.div>

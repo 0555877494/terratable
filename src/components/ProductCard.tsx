@@ -41,8 +41,8 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -8 }}
-      className="group relative bg-white rounded-3xl shadow-sm border border-terra-100/50 overflow-hidden hover:shadow-2xl hover:shadow-terra-200/40 transition-all duration-500"
+      whileHover={{ y: -12 }}
+      className="group relative bg-white rounded-3xl overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-500"
     >
       {/* Image Container */}
       <div className="relative overflow-hidden aspect-[4/3]">
@@ -52,33 +52,33 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         {/* Top badges */}
-        <div className="absolute top-3 left-3 flex gap-2">
-          <span className="px-3 py-1 glass rounded-full text-[11px] font-semibold text-terra-800 shadow-sm">
+        <div className="absolute top-4 left-4 flex gap-2">
+          <span className="px-4 py-2 glass rounded-full text-xs font-bold text-stone-800 shadow-lg">
             {product.category}
           </span>
         </div>
 
-        {/* Wishlist button - always visible if in wishlist, otherwise on hover */}
+        {/* Wishlist button */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleWishlist}
-          className={`absolute top-3 right-3 w-9 h-9 glass rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all ${
+          className={`absolute top-4 right-4 w-11 h-11 glass rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all ${
             inWishlist ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
           }`}
         >
-          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-wine-600 text-wine-600' : 'text-wine-600'}`} />
+          <Heart className={`w-5 h-5 ${inWishlist ? 'fill-rose-500 text-rose-500' : 'text-stone-700'}`} />
         </motion.button>
 
         {/* Bottom overlay content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+        <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => onViewDetails(product)}
-            className="w-full py-2.5 glass rounded-xl text-sm font-semibold text-terra-900 hover:bg-white/90 transition-colors shadow-lg"
+            className="w-full py-3 glass rounded-xl text-sm font-bold text-stone-900 hover:bg-white/90 transition-colors shadow-lg"
           >
             Quick View
           </motion.button>
@@ -86,46 +86,46 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
       </div>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-6">
         {/* Origin tag */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-sage-400" />
-          <span className="text-[11px] font-medium text-terra-500 uppercase tracking-wider">{product.origin}</span>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-2 h-2 rounded-full bg-amber-500" />
+          <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">{product.origin}</span>
         </div>
 
         {/* Title */}
-        <h3 className="font-serif font-bold text-terra-900 text-lg leading-snug mb-1.5 group-hover:text-terra-700 transition-colors">
+        <h3 className="font-serif font-bold text-stone-900 text-xl leading-tight mb-2 group-hover:text-amber-700 transition-colors">
           {product.name}
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-terra-500 line-clamp-2 mb-4 leading-relaxed">
+        <p className="text-sm text-stone-600 line-clamp-2 mb-5 leading-relaxed">
           {product.description}
         </p>
 
         {/* Rating */}
-        <div className="flex items-center gap-1.5 mb-4">
+        <div className="flex items-center gap-2 mb-5">
           <div className="flex">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-3.5 h-3.5 ${
+                className={`w-4 h-4 ${
                   i < Math.floor(product.rating)
-                    ? 'fill-gold-400 text-gold-400'
-                    : 'fill-terra-100 text-terra-100'
+                    ? 'fill-amber-400 text-amber-400'
+                    : 'fill-stone-200 text-stone-200'
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs font-semibold text-terra-700">{product.rating}</span>
-          <span className="text-xs text-terra-400">({product.reviews})</span>
+          <span className="text-sm font-bold text-stone-800">{product.rating}</span>
+          <span className="text-sm text-stone-400">({product.reviews})</span>
         </div>
 
         {/* Price & Add to Cart */}
-        <div className="flex items-center justify-between pt-4 border-t border-terra-50">
+        <div className="flex items-center justify-between pt-5 border-t border-stone-100">
           <div>
-            <span className="text-[11px] text-terra-400 uppercase tracking-wider">Price</span>
-            <p className="text-xl font-bold bg-gradient-to-r from-terra-700 to-wine-700 bg-clip-text text-transparent">
+            <span className="text-xs text-stone-400 uppercase tracking-wider font-semibold">Price</span>
+            <p className="text-2xl font-bold gradient-text">
               ${product.price.toFixed(2)}
             </p>
           </div>
@@ -133,7 +133,7 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleAddToCart}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-terra-600 to-terra-700 text-white rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-terra-500/30 transition-all"
+            className="flex items-center gap-2 px-5 py-3 gradient-bg text-white rounded-full text-sm font-bold shadow-lg shadow-amber-500/30 hover:shadow-xl transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Add</span>
@@ -142,7 +142,7 @@ export default function ProductCard({ product, onViewDetails, index }: Props) {
       </div>
 
       {/* Decorative corner accent */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-terra-100/50 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-100/50 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </motion.div>
   );
 }
