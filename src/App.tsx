@@ -3,15 +3,18 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { StoreProvider } from './contexts/StoreContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/Navbar';
 import BackToTop from './components/BackToTop';
 import AnnouncementBanner from './components/AnnouncementBanner';
 import LiveChat from './components/LiveChat';
+import FlashSale from './components/FlashSale';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
+import GiftCards from './pages/GiftCards';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -35,8 +38,9 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
 
 function AppRoutes() {
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-cream-50 dark:bg-stone-900 transition-colors">
       <AnnouncementBanner />
+      <FlashSale />
       <Navbar />
       <BackToTop />
       <LiveChat />
@@ -47,6 +51,7 @@ function AppRoutes() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/gift-cards" element={<GiftCards />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={
@@ -74,13 +79,15 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <StoreProvider>
-            <AppRoutes />
-          </StoreProvider>
-        </ToastProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <StoreProvider>
+              <AppRoutes />
+            </StoreProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

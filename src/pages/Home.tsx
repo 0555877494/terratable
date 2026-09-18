@@ -7,6 +7,7 @@ import { categories } from '../data/products';
 import { useStore } from '../contexts/StoreContext';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
+import RecentlyViewed from '../components/RecentlyViewed';
 import Logo from '../components/Logo';
 
 export default function Home() {
@@ -301,6 +302,9 @@ export default function Home() {
         </AnimatePresence>
       </section>
 
+      {/* Recently Viewed */}
+      <RecentlyViewed />
+
       {/* Testimonial Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 py-24">
         <div className="absolute inset-0">
@@ -390,7 +394,7 @@ export default function Home() {
               <div className="space-y-3 text-stone-400">
                 <Link to="/" className="block hover:text-white cursor-pointer transition-colors">All Products</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">New Arrivals</p>
-                <p className="hover:text-white cursor-pointer transition-colors">Gift Sets</p>
+                <Link to="/gift-cards" className="block hover:text-white cursor-pointer transition-colors">Gift Cards</Link>
                 <Link to="/about" className="block hover:text-white cursor-pointer transition-colors">Our Story</Link>
                 <p className="hover:text-white cursor-pointer transition-colors">Blog</p>
               </div>

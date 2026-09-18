@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Heart } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Heart, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
+import { useTheme } from '../contexts/ThemeContext';
 import Logo from './Logo';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartCount } = useStore();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -102,6 +104,12 @@ export default function Navbar() {
               >
                 Contact
               </Link>
+              <Link
+                to="/gift-cards"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Gift Cards
+              </Link>
 
               {user ? (
                 <div className="relative ml-3">
@@ -172,12 +180,27 @@ export default function Navbar() {
                 </div>
               )}
 
+              {/* Dark Mode Toggle */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className="relative ml-3 p-3 rounded-full bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-amber-300 hover:shadow-lg transition-all"
+                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-5 h-5 text-stone-700" />
+                ) : (
+                  <Sun className="w-5 h-5 text-amber-500" />
+                )}
+              </motion.button>
+
               {/* Wishlist */}
               <Link to="/wishlist" className="relative ml-3">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="relative p-3 rounded-full bg-white border-2 border-stone-200 hover:border-rose-300 hover:shadow-lg transition-all"
+                  className="relative p-3 rounded-full bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-lg transition-all"
                 >
                   <Heart className="w-5 h-5 text-rose-500" />
                 </motion.div>
