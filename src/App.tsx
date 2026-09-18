@@ -10,6 +10,7 @@ import BackToTop from './components/BackToTop';
 import AnnouncementBanner from './components/AnnouncementBanner';
 import LiveChat from './components/LiveChat';
 import FlashSale from './components/FlashSale';
+import MobileBottomNav from './components/MobileBottomNav';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -23,6 +24,7 @@ import Blog from './pages/Blog';
 import AddressBook from './pages/AddressBook';
 import LoyaltyProgram from './pages/LoyaltyProgram';
 import ProductBundles from './pages/ProductBundles';
+import MyAccount from './pages/MyAccount';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -52,7 +54,8 @@ function AppRoutes() {
       <Navbar />
       <BackToTop />
       <LiveChat />
-      <main className="pt-[72px]">
+      <MobileBottomNav />
+      <main className="pt-[72px] pb-20 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -67,6 +70,7 @@ function AppRoutes() {
           <Route path="/addresses" element={<AddressBook />} />
           <Route path="/loyalty" element={<LoyaltyProgram />} />
           <Route path="/bundles" element={<ProductBundles />} />
+          <Route path="/my-account" element={<MyAccount />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={
