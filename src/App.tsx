@@ -25,6 +25,9 @@ import AddressBook from './pages/AddressBook';
 import LoyaltyProgram from './pages/LoyaltyProgram';
 import ProductBundles from './pages/ProductBundles';
 import MyAccount from './pages/MyAccount';
+import FAQ from './pages/FAQ';
+import PublicOrderTracking from './pages/PublicOrderTracking';
+import TermsPrivacy from './pages/TermsPrivacy';
 import CustomerDashboard from './pages/CustomerDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -71,6 +74,9 @@ function AppRoutes() {
           <Route path="/loyalty" element={<LoyaltyProgram />} />
           <Route path="/bundles" element={<ProductBundles />} />
           <Route path="/my-account" element={<MyAccount />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/track-order" element={<PublicOrderTracking />} />
+          <Route path="/terms" element={<TermsPrivacy />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer" element={

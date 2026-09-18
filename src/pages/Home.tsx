@@ -415,10 +415,10 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white text-lg mb-5">Support</h4>
               <div className="space-y-3 text-stone-400">
-                <p className="hover:text-white cursor-pointer transition-colors">Shipping & Returns</p>
+                <Link to="/track-order" className="block hover:text-white cursor-pointer transition-colors">Track Order</Link>
+                <Link to="/faq" className="block hover:text-white cursor-pointer transition-colors">FAQ</Link>
                 <Link to="/contact" className="block hover:text-white cursor-pointer transition-colors">Contact Us</Link>
-                <p className="hover:text-white cursor-pointer transition-colors">FAQ</p>
-                <p className="hover:text-white cursor-pointer transition-colors">Privacy Policy</p>
+                <Link to="/terms" className="block hover:text-white cursor-pointer transition-colors">Terms & Privacy</Link>
               </div>
             </div>
           </div>
