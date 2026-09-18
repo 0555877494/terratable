@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Package, Clock, MapPin, CheckCircle, Truck, ShoppingBag } from 'lucide-react';
+import { Package, Clock, MapPin, CheckCircle, Truck, ShoppingBag, Star, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 
@@ -13,47 +13,52 @@ export default function CustomerDashboard() {
   const orders = getOrdersForUser(user.id);
   const activeOrders = orders.filter(o => o.status !== 'delivered');
   const pastOrders = orders.filter(o => o.status === 'delivered');
+  const totalSpent = orders.reduce((sum, o) => sum + o.total, 0);
 
-  const statusColors: Record<string, string> = {
-    pending: 'bg-amber-100 text-amber-700',
-    confirmed: 'bg-blue-100 text-blue-700',
-    preparing: 'bg-purple-100 text-purple-700',
-    out_for_delivery: 'bg-orange-100 text-orange-700',
-    delivered: 'bg-sage-100 text-sage-700'
-  };
-
-  const statusIcons: Record<string, React.ReactNode> = {
-    pending: <Clock className="w-4 h-4" />,
-    confirmed: <CheckCircle className="w-4 h-4" />,
-    preparing: <Package className="w-4 h-4" />,
-    out_for_delivery: <Truck className="w-4 h-4" />,
-    delivered: <CheckCircle className="w-4 h-4" />
+  const statusConfig: Record<string, { color: string; bg: string; icon: React.ReactNode }> = {
+    pending: { color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200', icon: <Clock className="w-4 h-4" /> },
+    confirmed: { color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200', icon: <CheckCircle className="w-4 h-4" /> },
+    preparing: { color: 'text-purple-700', bg: 'bg-purple-50 border-purple-200', icon: <Package className="w-4 h-4" /> },
+    out_for_delivery: { color: 'text-orange-700', bg: 'bg-orange-50 border-orange-200', icon: <Truck className="w-4 h-4" /> },
+    delivered: { color: 'text-sage-700', bg: 'bg-sage-50 border-sage-200', icon: <CheckCircle className="w-4 h-4" /> }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="font-serif text-3xl font-bold text-terra-800">Welcome, {user.name.split(' ')[0]}!</h1>
-        <p className="text-terra-500 mt-1">Here's your order overview</p>
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      {/* Welcome Header */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-terra-800">
+              Hello, {user.name.split(' ')[0]} 👋
+            </h1>
+            <p className="text-terra-500 mt-1">Here's what's happening with your orders</p>
+          </div>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-terra-600 to-wine-600 text-white rounded-full text-sm font-semibold shadow-lg shadow-terra-500/20 hover:shadow-xl transition-all"
+          >
+            <ShoppingBag className="w-4 h-4" /> Shop More
+          </Link>
+        </div>
       </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         {[
-          { label: 'Total Orders', value: orders.length, icon: <ShoppingBag className="w-5 h-5" />, color: 'bg-terra-50 text-terra-600' },
-          { label: 'Active Orders', value: activeOrders.length, icon: <Truck className="w-5 h-5" />, color: 'bg-orange-50 text-orange-600' },
-          { label: 'Delivered', value: pastOrders.length, icon: <CheckCircle className="w-5 h-5" />, color: 'bg-sage-50 text-sage-600' }
+          { label: 'Total Orders', value: orders.length, icon: <ShoppingBag className="w-5 h-5" />, gradient: 'from-terra-500 to-terra-600', light: 'bg-terra-50' },
+          { label: 'Active', value: activeOrders.length, icon: <Truck className="w-5 h-5" />, gradient: 'from-orange-500 to-wine-500', light: 'bg-orange-50' },
+          { label: 'Total Spent', value: `$${totalSpent.toFixed(0)}`, icon: <Star className="w-5 h-5" />, gradient: 'from-sage-500 to-sage-600', light: 'bg-sage-50' }
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white rounded-2xl border border-terra-100 p-5 shadow-sm"
+            className="relative bg-white rounded-2xl border border-terra-100/50 p-5 shadow-sm overflow-hidden group hover:shadow-lg transition-shadow"
           >
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.color}`}>
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center text-white shadow-lg`}>
                 {stat.icon}
               </div>
               <div>
@@ -61,73 +66,82 @@ export default function CustomerDashboard() {
                 <p className="text-sm text-terra-500">{stat.label}</p>
               </div>
             </div>
+            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.light} rounded-full -translate-y-8 translate-x-8 opacity-50 group-hover:scale-150 transition-transform duration-500`} />
           </motion.div>
         ))}
       </div>
 
       {/* Active Orders */}
       {activeOrders.length > 0 && (
-        <div className="mb-8">
-          <h2 className="font-serif text-xl font-semibold text-terra-800 mb-4">Active Orders</h2>
+        <div className="mb-10">
+          <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5 flex items-center gap-2">
+            <Truck className="w-5 h-5 text-orange-500" /> Active Orders
+          </h2>
           <div className="space-y-4">
-            {activeOrders.map((order, i) => (
-              <motion.div
-                key={order.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-2xl border border-terra-100 p-5 shadow-sm"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                  <div>
-                    <p className="font-medium text-terra-800">Order #{order.id.slice(-6)}</p>
-                    <p className="text-sm text-terra-500">{new Date(order.createdAt).toLocaleDateString()}</p>
-                  </div>
-                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
-                    {statusIcons[order.status]} {order.status.replace('_', ' ')}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {order.items.map(item => (
-                    <div key={item.product.id} className="flex items-center gap-2 px-2 py-1 bg-terra-50 rounded-lg">
-                      <img src={item.product.image} alt="" className="w-6 h-6 rounded object-cover" />
-                      <span className="text-xs text-terra-700">{item.product.name} ×{item.quantity}</span>
+            {activeOrders.map((order, i) => {
+              const config = statusConfig[order.status];
+              return (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-2xl border border-terra-100/50 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                    <div>
+                      <p className="font-semibold text-terra-800">Order #{order.id.slice(-6).toUpperCase()}</p>
+                      <p className="text-sm text-terra-500 mt-0.5">{new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
                     </div>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-terra-50">
-                  <div className="flex items-center gap-1 text-sm text-terra-500">
-                    <MapPin className="w-3.5 h-3.5" /> {order.address}
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${config.bg} ${config.color}`}>
+                      {config.icon} {order.status.replace('_', ' ')}
+                    </span>
                   </div>
-                  <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
-                </div>
-                {order.deliveryAgentName && (
-                  <div className="mt-3 flex items-center gap-2 text-sm text-terra-600 bg-sage-50 rounded-lg p-2">
-                    <Truck className="w-4 h-4 text-sage-600" />
-                    Delivered by: {order.deliveryAgentName}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {order.items.map(item => (
+                      <div key={item.product.id} className="flex items-center gap-2 px-3 py-1.5 bg-cream-50 rounded-lg border border-terra-100/50">
+                        <img src={item.product.image} alt="" className="w-7 h-7 rounded-md object-cover" />
+                        <span className="text-xs font-medium text-terra-700">{item.product.name}</span>
+                        <span className="text-[10px] text-terra-400">×{item.quantity}</span>
+                      </div>
+                    ))}
                   </div>
-                )}
-              </motion.div>
-            ))}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-terra-50">
+                    <div className="flex items-center gap-1.5 text-sm text-terra-500">
+                      <MapPin className="w-3.5 h-3.5" /> {order.address}
+                    </div>
+                    <span className="text-lg font-bold bg-gradient-to-r from-terra-700 to-wine-700 bg-clip-text text-transparent">${order.total.toFixed(2)}</span>
+                  </div>
+                  {order.deliveryAgentName && (
+                    <div className="mt-4 flex items-center gap-2 text-sm text-sage-700 bg-sage-50 rounded-xl p-3 border border-sage-100">
+                      <Truck className="w-4 h-4 text-sage-500" />
+                      <span>Delivered by <strong>{order.deliveryAgentName}</strong></span>
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Past Orders */}
       {pastOrders.length > 0 && (
-        <div>
-          <h2 className="font-serif text-xl font-semibold text-terra-800 mb-4">Order History</h2>
+        <div className="mb-10">
+          <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5">Order History</h2>
           <div className="space-y-3">
             {pastOrders.map(order => (
-              <div key={order.id} className="bg-white rounded-xl border border-terra-100 p-4 flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-terra-700">Order #{order.id.slice(-6)}</p>
-                  <p className="text-xs text-terra-400">{new Date(order.createdAt).toLocaleDateString()} • {order.items.length} items</p>
+              <div key={order.id} className="bg-white rounded-xl border border-terra-100/50 p-4 flex items-center justify-between hover:shadow-sm transition-shadow">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-sage-50 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-sage-500" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-terra-700">Order #{order.id.slice(-6).toUpperCase()}</p>
+                    <p className="text-xs text-terra-400">{new Date(order.createdAt).toLocaleDateString()} • {order.items.length} items</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-sage-600">Delivered</span>
-                  <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
-                </div>
+                <span className="font-bold text-terra-800">${order.total.toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -135,36 +149,36 @@ export default function CustomerDashboard() {
       )}
 
       {orders.length === 0 && (
-        <div className="text-center py-16">
-          <ShoppingBag className="w-16 h-16 mx-auto text-terra-200 mb-4" />
-          <h3 className="font-serif text-xl text-terra-700 mb-2">No orders yet</h3>
-          <p className="text-terra-500 mb-4">Start exploring our specialty food collection</p>
-          <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 bg-terra-600 text-white rounded-full font-medium hover:bg-terra-700 transition-colors">
-            Browse Products
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+          <div className="text-6xl mb-4">🍽️</div>
+          <h3 className="font-serif text-2xl text-terra-700 mb-2">No orders yet</h3>
+          <p className="text-terra-500 mb-6">Start exploring our specialty food collection</p>
+          <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-terra-600 to-wine-600 text-white rounded-full font-medium shadow-lg shadow-terra-500/20 hover:shadow-xl transition-all">
+            Browse Products <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
+        </motion.div>
       )}
 
-      {/* Profile */}
-      <div className="mt-8 bg-white rounded-2xl border border-terra-100 p-6">
-        <h2 className="font-serif text-xl font-semibold text-terra-800 mb-4">Profile Settings</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm text-terra-500">Name</label>
-            <p className="font-medium text-terra-800">{user.name}</p>
+      {/* Profile Card */}
+      <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">
+        <h2 className="font-serif text-xl font-semibold text-terra-800 mb-5 flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-terra-400 to-wine-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xs font-bold">{user.name[0]}</span>
           </div>
-          <div>
-            <label className="text-sm text-terra-500">Email</label>
-            <p className="font-medium text-terra-800">{user.email}</p>
-          </div>
-          <div>
-            <label className="text-sm text-terra-500">Phone</label>
-            <p className="font-medium text-terra-800">{user.phone || 'Not set'}</p>
-          </div>
-          <div>
-            <label className="text-sm text-terra-500">Address</label>
-            <p className="font-medium text-terra-800">{user.address || 'Not set'}</p>
-          </div>
+          Profile Settings
+        </h2>
+        <div className="grid sm:grid-cols-2 gap-5">
+          {[
+            { label: 'Name', value: user.name },
+            { label: 'Email', value: user.email },
+            { label: 'Phone', value: user.phone || 'Not set' },
+            { label: 'Address', value: user.address || 'Not set' }
+          ].map(field => (
+            <div key={field.label} className="p-4 bg-cream-50 rounded-xl">
+              <label className="text-xs text-terra-400 uppercase tracking-wider font-medium">{field.label}</label>
+              <p className="font-medium text-terra-800 mt-1">{field.value}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
