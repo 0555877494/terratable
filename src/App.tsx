@@ -11,6 +11,7 @@ import AnnouncementBanner from './components/AnnouncementBanner';
 import LiveChat from './components/LiveChat';
 import FlashSale from './components/FlashSale';
 import MobileBottomNav from './components/MobileBottomNav';
+import KeyboardShortcuts from './components/KeyboardShortcuts';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -58,6 +59,7 @@ function AppRoutes() {
       <BackToTop />
       <LiveChat />
       <MobileBottomNav />
+      <KeyboardShortcuts />
       <main className="pt-[72px] pb-20 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />
