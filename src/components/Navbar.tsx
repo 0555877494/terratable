@@ -295,7 +295,7 @@ export default function Navbar() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="absolute top-0 right-0 w-3.5 h-3.5 gradient-bg text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white"
+                        className="absolute -top-1 -right-1 min-w-[14px] h-[14px] px-1 gradient-bg text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm"
                       >
                         {cartCount}
                       </motion.span>
