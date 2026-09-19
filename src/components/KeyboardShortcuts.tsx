@@ -40,10 +40,10 @@ export default function KeyboardShortcuts() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 left-6 z-40 w-12 h-12 bg-stone-800 dark:bg-stone-700 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-stone-900 dark:hover:bg-stone-600 transition-colors print:hidden"
+        className="fixed bottom-20 left-6 z-40 w-10 h-10 bg-stone-800 dark:bg-stone-700 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-stone-900 dark:hover:bg-stone-600 transition-colors print:hidden"
         title="Keyboard shortcuts (?)"
       >
-        <Keyboard className="w-5 h-5" />
+        <Keyboard className="w-4 h-4" />
       </motion.button>
 
       {/* Modal */}

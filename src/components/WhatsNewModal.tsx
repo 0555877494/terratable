@@ -40,10 +40,10 @@ export default function WhatsNewModal() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 2 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 z-40 w-14 h-14 gradient-bg text-white rounded-full shadow-2xl shadow-amber-500/30 flex items-center justify-center hover:shadow-amber-500/50 transition-shadow"
+        className="fixed bottom-32 left-6 z-40 w-10 h-10 gradient-bg text-white rounded-full shadow-lg shadow-amber-500/30 flex items-center justify-center hover:shadow-amber-500/50 transition-shadow"
         title="What's New"
       >
-        <Sparkles className="w-6 h-6" />
+        <Sparkles className="w-4 h-4" />
       </motion.button>
 
       {/* Modal */}
