@@ -12,6 +12,8 @@ import LiveChat from './components/LiveChat';
 import FlashSale from './components/FlashSale';
 import MobileBottomNav from './components/MobileBottomNav';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
+import TestimonialsCarousel from './components/TestimonialsCarousel';
+import PriceDropAlerts from './components/PriceDropAlerts';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -34,6 +36,7 @@ import Newsletter from './pages/Newsletter';
 import PromoCodes from './pages/PromoCodes';
 import ReturnRequest from './pages/ReturnRequest';
 import ProducerStories from './pages/ProducerStories';
+import GiftFinder from './pages/GiftFinder';
 import FAQ from './pages/FAQ';
 import PublicOrderTracking from './pages/PublicOrderTracking';
 import TermsPrivacy from './pages/TermsPrivacy';
@@ -68,6 +71,7 @@ function AppRoutes() {
       <LiveChat />
       <MobileBottomNav />
       <KeyboardShortcuts />
+      <PriceDropAlerts />
       <main className="pt-[72px] pb-20 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -92,6 +96,7 @@ function AppRoutes() {
           <Route path="/promo-codes" element={<PromoCodes />} />
           <Route path="/return-request" element={<ReturnRequest />} />
           <Route path="/producers" element={<ProducerStories />} />
+          <Route path="/gift-finder" element={<GiftFinder />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/track-order" element={<PublicOrderTracking />} />
           <Route path="/terms" element={<TermsPrivacy />} />

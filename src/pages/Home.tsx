@@ -9,6 +9,7 @@ import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import RecentlyViewed from '../components/RecentlyViewed';
 import AdvancedSearch from '../components/AdvancedSearch';
+import TestimonialsCarousel from '../components/TestimonialsCarousel';
 import Logo from '../components/Logo';
 
 export default function Home() {
@@ -316,6 +317,9 @@ export default function Home() {
       {/* Recently Viewed */}
       <RecentlyViewed />
 
+      {/* Testimonials Carousel */}
+      <TestimonialsCarousel />
+
       {/* Testimonial Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 py-24">
         <div className="absolute inset-0">
@@ -409,6 +413,7 @@ export default function Home() {
                 <Link to="/subscriptions" className="block hover:text-white cursor-pointer transition-colors">Subscriptions</Link>
                 <Link to="/bundles" className="block hover:text-white cursor-pointer transition-colors">Product Bundles</Link>
                 <Link to="/producers" className="block hover:text-white cursor-pointer transition-colors">Our Producers</Link>
+                <Link to="/gift-finder" className="block hover:text-white cursor-pointer transition-colors">Gift Finder</Link>
                 <Link to="/blog" className="block hover:text-white cursor-pointer transition-colors">Recipes & Blog</Link>
                 <Link to="/newsletter" className="block hover:text-white cursor-pointer transition-colors">Newsletter</Link>
                 <Link to="/about" className="block hover:text-white cursor-pointer transition-colors">Our Story</Link>
