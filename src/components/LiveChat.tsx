@@ -75,19 +75,20 @@ export default function LiveChat() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 gradient-bg text-white rounded-full shadow-2xl shadow-amber-500/30 flex items-center justify-center hover:shadow-amber-500/50 transition-shadow"
+        className="fixed bottom-56 left-6 z-40 w-10 h-10 gradient-bg text-white rounded-full shadow-lg shadow-amber-500/30 flex items-center justify-center hover:shadow-amber-500/50 transition-shadow"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        {isOpen ? <X className="w-4 h-4" /> : <MessageCircle className="w-4 h-4" />}
       </motion.button>
 
       {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
+           
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-40 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border-2 border-stone-200 overflow-hidden"
+            className="fixed bottom-24 left-6 z-40 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border-2 border-stone-200 overflow-hidden"
           >
             {/* Header */}
             <div className="gradient-bg p-4 text-white">
