@@ -408,6 +408,7 @@ export default function Home() {
                 <Link to="/gift-cards" className="block hover:text-white cursor-pointer transition-colors">Gift Cards</Link>
                 <Link to="/subscriptions" className="block hover:text-white cursor-pointer transition-colors">Subscriptions</Link>
                 <Link to="/bundles" className="block hover:text-white cursor-pointer transition-colors">Product Bundles</Link>
+                <Link to="/producers" className="block hover:text-white cursor-pointer transition-colors">Our Producers</Link>
                 <Link to="/blog" className="block hover:text-white cursor-pointer transition-colors">Recipes & Blog</Link>
                 <Link to="/newsletter" className="block hover:text-white cursor-pointer transition-colors">Newsletter</Link>
                 <Link to="/about" className="block hover:text-white cursor-pointer transition-colors">Our Story</Link>
@@ -419,6 +420,8 @@ export default function Home() {
                 <Link to="/track-order" className="block hover:text-white cursor-pointer transition-colors">Track Order</Link>
                 <Link to="/order-history" className="block hover:text-white cursor-pointer transition-colors">Order History</Link>
                 <Link to="/support" className="block hover:text-white cursor-pointer transition-colors">Customer Support</Link>
+                <Link to="/return-request" className="block hover:text-white cursor-pointer transition-colors">Returns</Link>
+                <Link to="/promo-codes" className="block hover:text-white cursor-pointer transition-colors">Promo Codes</Link>
                 <Link to="/faq" className="block hover:text-white cursor-pointer transition-colors">FAQ</Link>
                 <Link to="/contact" className="block hover:text-white cursor-pointer transition-colors">Contact Us</Link>
                 <Link to="/terms" className="block hover:text-white cursor-pointer transition-colors">Terms & Privacy</Link>

@@ -31,6 +31,9 @@ import OrderHistory from './pages/OrderHistory';
 import CustomerSupport from './pages/CustomerSupport';
 import AccountSettings from './pages/AccountSettings';
 import Newsletter from './pages/Newsletter';
+import PromoCodes from './pages/PromoCodes';
+import ReturnRequest from './pages/ReturnRequest';
+import ProducerStories from './pages/ProducerStories';
 import FAQ from './pages/FAQ';
 import PublicOrderTracking from './pages/PublicOrderTracking';
 import TermsPrivacy from './pages/TermsPrivacy';
@@ -86,6 +89,9 @@ function AppRoutes() {
           <Route path="/support" element={<CustomerSupport />} />
           <Route path="/account-settings" element={<AccountSettings />} />
           <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/promo-codes" element={<PromoCodes />} />
+          <Route path="/return-request" element={<ReturnRequest />} />
+          <Route path="/producers" element={<ProducerStories />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/track-order" element={<PublicOrderTracking />} />
           <Route path="/terms" element={<TermsPrivacy />} />
