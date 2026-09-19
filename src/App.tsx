@@ -16,6 +16,10 @@ import TestimonialsCarousel from './components/TestimonialsCarousel';
 import PriceDropAlerts from './components/PriceDropAlerts';
 import FloatingActionButton from './components/FloatingActionButton';
 import ExitIntentPopup from './components/ExitIntentPopup';
+import CookieConsent from './components/CookieConsent';
+import Breadcrumbs from './components/Breadcrumbs';
+import WhatsNewModal from './components/WhatsNewModal';
+import LoadingScreen from './components/LoadingScreen';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -68,6 +72,7 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
 function AppRoutes() {
   return (
     <div className="min-h-screen bg-cream-50 dark:bg-stone-900 transition-colors">
+      <LoadingScreen />
       <AnnouncementBanner />
       <FlashSale />
       <Navbar />
@@ -78,7 +83,10 @@ function AppRoutes() {
       <PriceDropAlerts />
       <FloatingActionButton />
       <ExitIntentPopup />
+      <CookieConsent />
+      <WhatsNewModal />
       <main className="pt-[72px] pb-20 md:pb-0">
+        <Breadcrumbs />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

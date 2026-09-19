@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Heart, ShoppingBag, User } from 'lucide-react';
+import { Home, Package, Heart, User, ShoppingBag } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -12,18 +12,14 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
-    { path: '/#products', icon: Search, label: 'Search' },
+    { path: '/search', icon: ShoppingBag, label: 'Shop' },
     { path: '/wishlist', icon: Heart, label: 'Wishlist' },
-    { path: '/cart', icon: ShoppingBag, label: 'Cart', badge: cartCount },
+    { path: '/cart', icon: Package, label: 'Cart', badge: cartCount },
     { path: user ? '/my-account' : '/login', icon: User, label: 'Account' }
   ];
 
   return (
-    <motion.nav
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-stone-900 border-t-2 border-stone-200 dark:border-stone-700 shadow-2xl"
-    >
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 shadow-lg z-40">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -76,6 +72,6 @@ export default function MobileBottomNav() {
           );
         })}
       </div>
-    </motion.nav>
+    </nav>
   );
 }
