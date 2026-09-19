@@ -20,6 +20,10 @@ import CookieConsent from './components/CookieConsent';
 import Breadcrumbs from './components/Breadcrumbs';
 import WhatsNewModal from './components/WhatsNewModal';
 import LoadingScreen from './components/LoadingScreen';
+import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import ErrorBoundary from './components/ErrorBoundary';
+import RecentlyViewed from './components/RecentlyViewed';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -73,6 +77,7 @@ function AppRoutes() {
   return (
     <div className="min-h-screen bg-cream-50 dark:bg-stone-900 transition-colors">
       <LoadingScreen />
+      <ScrollToTop />
       <AnnouncementBanner />
       <FlashSale />
       <Navbar />
@@ -136,24 +141,28 @@ function AppRoutes() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <RecentlyViewed />
+      <Footer />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <I18nProvider>
-        <ThemeProvider>
-          <AuthProvider>
-            <ToastProvider>
-              <StoreProvider>
-                <AppRoutes />
-              </StoreProvider>
-            </ToastProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </I18nProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <I18nProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <ToastProvider>
+                <StoreProvider>
+                  <AppRoutes />
+                </StoreProvider>
+              </ToastProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </I18nProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
