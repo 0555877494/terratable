@@ -90,7 +90,7 @@ function AppRoutes() {
       <ExitIntentPopup />
       <CookieConsent />
       <WhatsNewModal />
-      <main className="pt-[72px] pb-20 md:pb-0">
+      <main className="pt-[60px] pb-14 md:pb-0">
         <Breadcrumbs />
         <Routes>
           <Route path="/" element={<Home />} />

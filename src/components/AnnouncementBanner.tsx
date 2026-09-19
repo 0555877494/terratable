@@ -27,7 +27,7 @@ export default function AnnouncementBanner() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         exit={{ y: -100 }}
-        className="gradient-bg text-white py-3 px-4 relative overflow-hidden"
+        className="gradient-bg text-white py-2 px-4 relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 text-sm font-semibold">
           {messages[currentMessage].icon}
