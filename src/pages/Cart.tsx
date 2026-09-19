@@ -8,6 +8,11 @@ import { useToast } from '../contexts/ToastContext';
 import CouponInput from '../components/CouponInput';
 import SavedCarts from '../components/SavedCarts';
 import OrderSummaryCard from '../components/OrderSummaryCard';
+import GiftMessage from '../components/GiftMessage';
+import DeliveryTimeSlot from '../components/DeliveryTimeSlot';
+import ShippingCalculator from '../components/ShippingCalculator';
+import OrderNotes from '../components/OrderNotes';
+import ShippingInsurance from '../components/ShippingInsurance';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal, placeOrder } = useStore();
@@ -194,6 +199,15 @@ export default function Cart() {
                     <Sparkles className="w-4 h-4 text-sage-500 mt-0.5 flex-shrink-0" />
                     <p className="text-xs text-sage-700">Your address is encrypted and secure. We only share it with our delivery partners.</p>
                   </div>
+                </div>
+
+                {/* Delivery Options */}
+                <div className="mt-6 space-y-6">
+                  <DeliveryTimeSlot />
+                  <ShippingCalculator cartTotal={cartTotal} />
+                  <ShippingInsurance orderTotal={cartTotal} />
+                  <GiftMessage />
+                  <OrderNotes />
                 </div>
               </motion.div>
             )}

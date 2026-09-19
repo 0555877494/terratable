@@ -8,6 +8,10 @@ import { useToast } from '../contexts/ToastContext';
 import OrderTimeline from '../components/OrderTimeline';
 import OrderHistoryChart from '../components/OrderHistoryChart';
 import OrderSummaryTimeline from '../components/OrderSummaryTimeline';
+import LoyaltyDashboard from '../components/LoyaltyDashboard';
+import RecentlyPurchased from '../components/RecentlyPurchased';
+import QuickReorder from '../components/QuickReorder';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
@@ -51,9 +55,12 @@ export default function CustomerDashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Welcome Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+      <Breadcrumbs />
+      
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        {/* Welcome Header */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl sm:text-4xl font-bold text-terra-800">
@@ -118,6 +125,25 @@ export default function CustomerDashboard() {
               status: o.status
             }))} 
           />
+        </div>
+      )}
+
+      {/* Loyalty Dashboard */}
+      <div className="mb-10">
+        <LoyaltyDashboard
+          points={2450}
+          tier="Gold"
+          totalSpent={totalSpent}
+          totalOrders={orders.length}
+          memberSince={user.joinedDate || '2024-01-01'}
+        />
+      </div>
+
+      {/* Quick Reorder & Recently Purchased */}
+      {pastOrders.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6 mb-10">
+          <QuickReorder />
+          <RecentlyPurchased />
         </div>
       )}
 
@@ -372,6 +398,7 @@ export default function CustomerDashboard() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

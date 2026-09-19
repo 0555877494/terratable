@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Menu, X, LogOut, Home, Package, Truck, Shield, Heart, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, ShoppingBag, User, Menu, X, LogOut, Home, Package, Truck, Shield, Heart, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -136,6 +136,18 @@ export default function Navbar() {
               >
                 Bundles
               </Link>
+              <Link
+                to="/promo-codes"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Deals
+              </Link>
+              <Link
+                to="/gift-finder"
+                className="px-5 py-2.5 rounded-full text-sm font-bold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+              >
+                Gift Finder
+              </Link>
 
               {user ? (
                 <div className="relative ml-3">
@@ -177,6 +189,34 @@ export default function Navbar() {
                             className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
                           >
                             <Package className="w-4 h-4" /> Dashboard
+                          </Link>
+                          <Link
+                            to="/my-account"
+                            onClick={() => setUserMenu(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
+                          >
+                            <User className="w-4 h-4" /> My Account
+                          </Link>
+                          <Link
+                            to="/order-history"
+                            onClick={() => setUserMenu(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
+                          >
+                            <ShoppingBag className="w-4 h-4" /> Order History
+                          </Link>
+                          <Link
+                            to="/wishlist"
+                            onClick={() => setUserMenu(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
+                          >
+                            <Heart className="w-4 h-4" /> Wishlist
+                          </Link>
+                          <Link
+                            to="/account-settings"
+                            onClick={() => setUserMenu(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
+                          >
+                            <Shield className="w-4 h-4" /> Settings
                           </Link>
                           <button
                             onClick={handleLogout}
