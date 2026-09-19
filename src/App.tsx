@@ -15,6 +15,7 @@ import KeyboardShortcuts from './components/KeyboardShortcuts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import PriceDropAlerts from './components/PriceDropAlerts';
 import FloatingActionButton from './components/FloatingActionButton';
+import ExitIntentPopup from './components/ExitIntentPopup';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -74,6 +75,7 @@ function AppRoutes() {
       <KeyboardShortcuts />
       <PriceDropAlerts />
       <FloatingActionButton />
+      <ExitIntentPopup />
       <main className="pt-[72px] pb-20 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -10,6 +10,8 @@ import ProductModal from '../components/ProductModal';
 import RecentlyViewed from '../components/RecentlyViewed';
 import AdvancedSearch from '../components/AdvancedSearch';
 import TestimonialsCarousel from '../components/TestimonialsCarousel';
+import SearchAutocomplete from '../components/SearchAutocomplete';
+import CategoryShowcase from '../components/CategoryShowcase';
 import Logo from '../components/Logo';
 
 export default function Home() {
@@ -223,16 +225,9 @@ export default function Home() {
           className="glass rounded-2xl shadow-xl p-6 sm:p-8 mb-12"
         >
           <div className="flex flex-col lg:flex-row gap-5">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search by name, origin, or description..."
-                className="w-full pl-14 pr-5 py-4 rounded-xl border-2 border-stone-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-lg"
-              />
+            {/* Search with Autocomplete */}
+            <div className="flex-1">
+              <SearchAutocomplete />
             </div>
             {/* Category Filters */}
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-1">
@@ -316,6 +311,9 @@ export default function Home() {
 
       {/* Recently Viewed */}
       <RecentlyViewed />
+
+      {/* Category Showcase */}
+      <CategoryShowcase />
 
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
