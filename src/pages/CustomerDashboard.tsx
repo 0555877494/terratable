@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
 import OrderTimeline from '../components/OrderTimeline';
+import OrderHistoryChart from '../components/OrderHistoryChart';
+import OrderSummaryTimeline from '../components/OrderSummaryTimeline';
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
@@ -95,6 +97,29 @@ export default function CustomerDashboard() {
           </motion.div>
         ))}
       </div>
+
+      {/* Order Analytics */}
+      {orders.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6 mb-10">
+          <OrderHistoryChart 
+            orders={orders.map(o => ({
+              id: o.id,
+              date: o.createdAt,
+              total: o.total,
+              status: o.status
+            }))} 
+          />
+          <OrderSummaryTimeline 
+            orders={orders.map(o => ({
+              id: o.id,
+              date: o.createdAt,
+              total: o.total,
+              itemCount: o.items.length,
+              status: o.status
+            }))} 
+          />
+        </div>
+      )}
 
       {/* Pending Orders */}
       {pendingOrders.length > 0 && (

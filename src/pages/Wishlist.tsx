@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
+import WishlistSharing from '../components/WishlistSharing';
+import ProductComparisonTool from '../components/ProductComparisonTool';
 
 export default function Wishlist() {
   const { wishlist, products, removeFromWishlist, addToCart } = useStore();
@@ -51,6 +53,14 @@ export default function Wishlist() {
         </h1>
         <p className="text-terra-500 mt-2">{wishlistProducts.length} saved items</p>
       </motion.div>
+
+      {/* Wishlist Sharing & Comparison */}
+      {wishlistProducts.length >= 2 && (
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <WishlistSharing />
+          <ProductComparisonTool />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {wishlistProducts.map((product, index) => (

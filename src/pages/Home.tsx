@@ -12,6 +12,8 @@ import AdvancedSearch from '../components/AdvancedSearch';
 import TestimonialsCarousel from '../components/TestimonialsCarousel';
 import SearchAutocomplete from '../components/SearchAutocomplete';
 import CategoryShowcase from '../components/CategoryShowcase';
+import FlashDeals from '../components/FlashDeals';
+import CustomBundleBuilder from '../components/CustomBundleBuilder';
 import Logo from '../components/Logo';
 
 export default function Home() {
@@ -314,6 +316,16 @@ export default function Home() {
 
       {/* Category Showcase */}
       <CategoryShowcase />
+
+      {/* Flash Deals */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <FlashDeals />
+      </div>
+
+      {/* Custom Bundle Builder */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <CustomBundleBuilder />
+      </div>
 
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />

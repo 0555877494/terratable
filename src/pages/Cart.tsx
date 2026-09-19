@@ -6,6 +6,8 @@ import { useStore } from '../contexts/StoreContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import CouponInput from '../components/CouponInput';
+import SavedCarts from '../components/SavedCarts';
+import OrderSummaryCard from '../components/OrderSummaryCard';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal, placeOrder } = useStore();
@@ -302,6 +304,9 @@ export default function Cart() {
         {/* Summary */}
         <div className="lg:col-span-1">
           <div className="space-y-4 sticky top-24">
+            {/* Saved Carts */}
+            <SavedCarts />
+
             {/* Coupon Input */}
             <CouponInput />
 
