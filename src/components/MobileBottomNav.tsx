@@ -49,8 +49,8 @@ export default function MobileBottomNav() {
                   />
                 </motion.div>
                 
-                {/* Badge */}
-                {item.badge && item.badge > 0 && (
+                {/* Badge - Only show when cart has items */}
+                {item.badge !== undefined && item.badge > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
