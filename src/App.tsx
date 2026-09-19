@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { StoreProvider } from './contexts/StoreContext';
@@ -6,24 +6,23 @@ import { ToastProvider } from './contexts/ToastContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { I18nProvider } from './contexts/I18nContext';
 import Navbar from './components/Navbar';
-import BackToTop from './components/BackToTop';
 import AnnouncementBanner from './components/AnnouncementBanner';
-import LiveChat from './components/LiveChat';
 import FlashSale from './components/FlashSale';
 import MobileBottomNav from './components/MobileBottomNav';
-import KeyboardShortcuts from './components/KeyboardShortcuts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import PriceDropAlerts from './components/PriceDropAlerts';
-import FloatingActionButton from './components/FloatingActionButton';
+import UnifiedFAB from './components/UnifiedFAB';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import CookieConsent from './components/CookieConsent';
 import Breadcrumbs from './components/Breadcrumbs';
-import WhatsNewModal from './components/WhatsNewModal';
 import LoadingScreen from './components/LoadingScreen';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 import RecentlyViewed from './components/RecentlyViewed';
+import WhatsNewModal from './components/WhatsNewModal';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
+import LiveChatModal from './components/LiveChatModal';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -74,6 +73,21 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
 }
 
 function AppRoutes() {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showKeyboardModal, setShowKeyboardModal] = useState(false);
+  const [showWhatsNewModal, setShowWhatsNewModal] = useState(false);
+  const [showLiveChatModal, setShowLiveChatModal] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 400);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-cream-50 dark:bg-stone-900 transition-colors">
       <LoadingScreen />
@@ -81,15 +95,34 @@ function AppRoutes() {
       <AnnouncementBanner />
       <FlashSale />
       <Navbar />
-      <BackToTop />
-      <LiveChat />
       <MobileBottomNav />
-      <KeyboardShortcuts />
       <PriceDropAlerts />
-      <FloatingActionButton />
       <ExitIntentPopup />
       <CookieConsent />
-      <WhatsNewModal />
+      
+      {/* Unified FAB - All actions in one button */}
+      <UnifiedFAB
+        showBackToTop={showBackToTop}
+        onBackToTop={scrollToTop}
+        onKeyboardShortcuts={() => setShowKeyboardModal(true)}
+        onWhatsNew={() => setShowWhatsNewModal(true)}
+        onLiveChat={() => setShowLiveChatModal(true)}
+      />
+
+      {/* Modals */}
+      <KeyboardShortcutsModal 
+        isOpen={showKeyboardModal} 
+        onClose={() => setShowKeyboardModal(false)} 
+      />
+      <WhatsNewModal 
+        isOpen={showWhatsNewModal} 
+        onClose={() => setShowWhatsNewModal(false)} 
+      />
+      <LiveChatModal 
+        isOpen={showLiveChatModal} 
+        onClose={() => setShowLiveChatModal(false)} 
+      />
+
       <main className="pt-[48px] pb-12 md:pb-0">
         <Breadcrumbs />
         <Routes>

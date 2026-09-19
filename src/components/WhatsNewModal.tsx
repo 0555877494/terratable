@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Gift, Zap, Heart } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 
-export default function WhatsNewModal() {
-  const [isOpen, setIsOpen] = useState(false);
+interface WhatsNewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
+export default function WhatsNewModal({ isOpen, onClose }: WhatsNewModalProps) {
   const features = [
     {
       icon: <Sparkles className="w-6 h-6" />,
@@ -13,19 +16,19 @@ export default function WhatsNewModal() {
       color: 'from-amber-500 to-orange-500'
     },
     {
-      icon: <Gift className="w-6 h-6" />,
+      icon: <Sparkles className="w-6 h-6" />,
       title: 'Gift Finder Quiz',
       description: 'Find the perfect gift with our interactive 5-step quiz',
       color: 'from-rose-500 to-pink-500'
     },
     {
-      icon: <Zap className="w-6 h-6" />,
+      icon: <Sparkles className="w-6 h-6" />,
       title: 'Flash Deals',
       description: 'Limited-time offers with countdown timers and stock alerts',
       color: 'from-purple-500 to-indigo-500'
     },
     {
-      icon: <Heart className="w-6 h-6" />,
+      icon: <Sparkles className="w-6 h-6" />,
       title: 'Smart Wishlist',
       description: 'Price drop alerts, social sharing, and product comparison',
       color: 'from-emerald-500 to-teal-500'
@@ -33,102 +36,87 @@ export default function WhatsNewModal() {
   ];
 
   return (
-    <>
-      {/* Trigger Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-32 left-6 z-40 w-10 h-10 gradient-bg text-white rounded-full shadow-lg shadow-amber-500/30 flex items-center justify-center hover:shadow-amber-500/50 transition-shadow"
-        title="What's New"
-      >
-        <Sparkles className="w-4 h-4" />
-      </motion.button>
-
-      {/* Modal */}
-      <AnimatePresence>
-        {isOpen && (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          onClick={onClose}
+        >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
-            onClick={() => setIsOpen(false)}
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-white dark:bg-stone-800 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl"
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              onClick={e => e.stopPropagation()}
-              className="bg-white dark:bg-stone-800 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl"
-            >
-              {/* Header */}
-              <div className="sticky top-0 bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white rounded-t-3xl">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h2 className="font-serif text-2xl font-bold">What's New</h2>
-                      <p className="text-sm text-white/90">Latest features & improvements</p>
-                    </div>
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white rounded-t-3xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <Sparkles className="w-6 h-6" />
                   </div>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold">What's New</h2>
+                    <p className="text-sm text-white/90">Latest features & improvements</p>
+                  </div>
                 </div>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
+            </div>
 
-              {/* Content */}
-              <div className="p-6 space-y-4">
-                {features.map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-4 p-4 bg-stone-50 dark:bg-stone-700/50 rounded-xl"
-                  >
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-white flex-shrink-0`}>
-                      {feature.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-stone-900 dark:text-stone-100 mb-1">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm text-stone-600 dark:text-stone-400">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-start gap-4 p-4 bg-stone-50 dark:bg-stone-700/50 rounded-xl"
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-white flex-shrink-0`}>
+                    {feature.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-stone-900 dark:text-stone-100 mb-1">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-stone-600 dark:text-stone-400">
+                      {feature.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
 
-              {/* Footer */}
-              <div className="p-6 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900/50 rounded-b-3xl">
-                <div className="text-center">
-                  <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-                    We're constantly improving your shopping experience!
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsOpen(false)}
-                    className="px-8 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
-                  >
-                    Got it!
-                  </motion.button>
-                </div>
+            {/* Footer */}
+            <div className="p-6 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900/50 rounded-b-3xl">
+              <div className="text-center">
+                <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
+                  We're constantly improving your shopping experience!
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onClose}
+                  className="px-8 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+                >
+                  Got it!
+                </motion.button>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
