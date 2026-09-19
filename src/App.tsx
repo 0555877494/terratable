@@ -26,6 +26,11 @@ import AddressBook from './pages/AddressBook';
 import LoyaltyProgram from './pages/LoyaltyProgram';
 import ProductBundles from './pages/ProductBundles';
 import MyAccount from './pages/MyAccount';
+import OrderSuccess from './pages/OrderSuccess';
+import OrderHistory from './pages/OrderHistory';
+import CustomerSupport from './pages/CustomerSupport';
+import AccountSettings from './pages/AccountSettings';
+import Newsletter from './pages/Newsletter';
 import FAQ from './pages/FAQ';
 import PublicOrderTracking from './pages/PublicOrderTracking';
 import TermsPrivacy from './pages/TermsPrivacy';
@@ -76,6 +81,11 @@ function AppRoutes() {
           <Route path="/loyalty" element={<LoyaltyProgram />} />
           <Route path="/bundles" element={<ProductBundles />} />
           <Route path="/my-account" element={<MyAccount />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/support" element={<CustomerSupport />} />
+          <Route path="/account-settings" element={<AccountSettings />} />
+          <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/track-order" element={<PublicOrderTracking />} />
           <Route path="/terms" element={<TermsPrivacy />} />
