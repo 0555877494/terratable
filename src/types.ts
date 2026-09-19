@@ -62,10 +62,18 @@ export interface Order {
   userName: string;
   items: CartItem[];
   total: number;
+  subtotal?: number;
+  tax?: number;
+  shipping?: number;
+  discount?: number;
   status: 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered';
+  paymentStatus?: 'pending' | 'completed' | 'failed' | 'refunded';
   deliveryAgentId?: string;
   deliveryAgentName?: string;
   address: string;
+  trackingNumber?: string;
+  notes?: string;
+  couponCode?: string;
   createdAt: string;
   paymentMethod: string;
 }

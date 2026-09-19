@@ -8,7 +8,7 @@ import { useStore } from '../contexts/StoreContext';
 import ProductCardEnhanced from '../components/ProductCardEnhanced';
 import ProductModal from '../components/ProductModal';
 import RecentlyViewed from '../components/RecentlyViewed';
-import AdvancedSearch from '../components/AdvancedSearch';
+import FullTextSearch from '../components/FullTextSearch';
 import TestimonialsCarousel from '../components/TestimonialsCarousel';
 import SearchAutocomplete from '../components/SearchAutocomplete';
 import CategoryShowcase from '../components/CategoryShowcase';
@@ -518,12 +518,8 @@ export default function Home() {
       {/* Advanced Search Modal */}
       <AnimatePresence>
         {showAdvancedSearch && (
-          <AdvancedSearch
+          <FullTextSearch
             onClose={() => setShowAdvancedSearch(false)}
-            onViewDetails={(product) => {
-              setSelectedProduct(product);
-              setShowAdvancedSearch(false);
-            }}
           />
         )}
       </AnimatePresence>
