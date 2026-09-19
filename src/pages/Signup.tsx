@@ -17,7 +17,7 @@ export default function Signup() {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (password.length < 6) {
@@ -26,16 +26,16 @@ export default function Signup() {
     }
     setLoading(true);
 
-    setTimeout(() => {
-      const result = signup(name, email, password, role);
-      if (result.success) {
-        if (role === 'delivery') navigate('/delivery');
-        else navigate('/customer');
-      } else {
-        setError(result.message);
-      }
-      setLoading(false);
-    }, 800);
+    const result = await signup(name, email, password, role);
+    
+    if (result.success) {
+      if (role === 'delivery') navigate('/delivery');
+      else navigate('/customer');
+    } else {
+      setError(result.message);
+    }
+    
+    setLoading(false);
   };
 
   return (

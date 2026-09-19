@@ -14,25 +14,28 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    setTimeout(() => {
-      const result = login(email, password);
-      if (result.success) {
-        const user = JSON.parse(localStorage.getItem('terra_current_user') || '{}');
-        switch (user.role) {
-          case 'admin': navigate('/admin'); break;
-          case 'delivery': navigate('/delivery'); break;
-          default: navigate('/customer'); break;
-        }
-      } else {
-        setError(result.message);
+    const result = await login(email, password);
+    
+    if (result.success) {
+      // Get user from localStorage or auth context
+      const userStr = localStorage.getItem('terra_current_user');
+      const user = userStr ? JSON.parse(userStr) : {};
+      
+      switch (user.role) {
+        case 'admin': navigate('/admin'); break;
+        case 'delivery': navigate('/delivery'); break;
+        default: navigate('/customer'); break;
       }
-      setLoading(false);
-    }, 800);
+    } else {
+      setError(result.message);
+    }
+    
+    setLoading(false);
   };
 
   return (
