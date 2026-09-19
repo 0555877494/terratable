@@ -68,100 +68,100 @@ export default function Navbar() {
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 py-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex justify-between items-center h-12">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-1.5 group">
               <motion.div
                 whileHover={{ rotate: 10, scale: 1.1 }}
                 className="relative"
               >
-                <Logo className="w-9 h-9" />
+                <Logo className="w-7 h-7" />
               </motion.div>
               <div className="hidden sm:block">
-                <span className="font-serif text-xl font-bold text-stone-800">
+                <span className="font-serif text-lg font-bold text-stone-800">
                   Terra & Table
                 </span>
               </div>
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-0.5">
               <Link
                 to="/"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Shop
               </Link>
               <Link
                 to="/about"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 About
               </Link>
               <Link
                 to="/contact"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Contact
               </Link>
               <Link
                 to="/gift-cards"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Gift Cards
               </Link>
               <Link
                 to="/subscriptions"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Subscriptions
               </Link>
               <Link
                 to="/blog"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Recipes
               </Link>
               <Link
                 to="/loyalty"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Rewards
               </Link>
               <Link
                 to="/bundles"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Bundles
               </Link>
               <Link
                 to="/promo-codes"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Deals
               </Link>
               <Link
                 to="/gift-finder"
-                className="px-3 py-1.5 rounded-full text-sm font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
+                className="px-2 py-1 rounded-full text-xs font-semibold text-stone-700 hover:bg-stone-100 hover:text-stone-900 transition-all"
               >
                 Gift Finder
               </Link>
 
               {user ? (
-                <div className="relative ml-2">
+                <div className="relative ml-1">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setUserMenu(!userMenu)}
-                    className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full bg-white border-2 border-stone-200 hover:border-amber-300 hover:shadow-lg transition-all"
+                    className="flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-full bg-white border border-stone-200 hover:border-amber-300 hover:shadow transition-all"
                   >
-                    <div className="w-7 h-7 gradient-bg rounded-full flex items-center justify-center shadow-md">
-                      <span className="text-white text-xs font-bold">{user.name[0]}</span>
+                    <div className="w-6 h-6 gradient-bg rounded-full flex items-center justify-center">
+                      <span className="text-white text-[10px] font-bold">{user.name[0]}</span>
                     </div>
-                    <span className="text-sm font-semibold text-stone-800">{user.name.split(' ')[0]}</span>
+                    <span className="text-xs font-semibold text-stone-800">{user.name.split(' ')[0]}</span>
                     {badge && (
-                      <span className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide ${badge.color}`}>
+                      <span className={`flex items-center gap-0.5 px-1 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wide ${badge.color}`}>
                         {badge.icon} {user.role}
                       </span>
                     )}
@@ -250,34 +250,34 @@ export default function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleTheme}
-                className="relative ml-2 p-2 rounded-full bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-amber-300 hover:shadow-lg transition-all"
+                className="relative ml-1 p-1.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-amber-300 hover:shadow transition-all"
                 title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
               >
                 {theme === 'light' ? (
-                  <Moon className="w-4 h-4 text-stone-700" />
+                  <Moon className="w-3.5 h-3.5 text-stone-700" />
                 ) : (
-                  <Sun className="w-4 h-4 text-amber-500" />
+                  <Sun className="w-3.5 h-3.5 text-amber-500" />
                 )}
               </motion.button>
 
               {/* Language & Currency Switcher */}
-              <div className="ml-3">
+              <div className="ml-1">
                 <LanguageCurrencySwitcher />
               </div>
 
               {/* Notification Center */}
-              <div className="ml-3">
+              <div className="ml-1">
                 <NotificationCenter />
               </div>
 
               {/* Wishlist */}
-              <Link to="/wishlist" className="relative ml-2">
+              <Link to="/wishlist" className="relative ml-1">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="relative p-2 rounded-full bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-lg transition-all"
+                  className="relative p-1.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:shadow transition-all"
                 >
-                  <Heart className="w-4 h-4 text-rose-500" />
+                  <Heart className="w-3.5 h-3.5 text-rose-500" />
                 </motion.div>
               </Link>
 
@@ -286,16 +286,16 @@ export default function Navbar() {
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="relative p-2 rounded-full bg-white border-2 border-stone-200 hover:border-amber-300 hover:shadow-lg transition-all"
+                  className="relative p-1.5 rounded-full bg-white border border-stone-200 hover:border-amber-300 hover:shadow transition-all"
                 >
-                  <ShoppingCart className="w-4 h-4 text-stone-700" />
+                  <ShoppingCart className="w-3.5 h-3.5 text-stone-700" />
                   <AnimatePresence>
                     {cartCount > 0 && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="absolute -top-1 -right-1 w-5 h-5 gradient-bg text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-amber-500/30"
+                        className="absolute -top-0.5 -right-0.5 w-4 h-4 gradient-bg text-white text-[9px] font-bold rounded-full flex items-center justify-center"
                       >
                         {cartCount}
                       </motion.span>
@@ -306,20 +306,20 @@ export default function Navbar() {
             </div>
 
             {/* Mobile buttons */}
-            <div className="flex md:hidden items-center gap-2">
-              <Link to="/cart" className="relative p-3 rounded-full bg-white border-2 border-stone-200">
-                <ShoppingCart className="w-5 h-5 text-stone-700" />
+            <div className="flex md:hidden items-center gap-1.5">
+              <Link to="/cart" className="relative p-1.5 rounded-full bg-white border border-stone-200">
+                <ShoppingCart className="w-4 h-4 text-stone-700" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-6 h-6 gradient-bg text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 gradient-bg text-white text-[9px] font-bold rounded-full flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </Link>
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
-                className="p-3 rounded-full bg-white border-2 border-stone-200"
+                className="p-1.5 rounded-full bg-white border border-stone-200"
               >
-                {mobileMenu ? <X className="w-5 h-5 text-stone-700" /> : <Menu className="w-5 h-5 text-stone-700" />}
+                {mobileMenu ? <X className="w-4 h-4 text-stone-700" /> : <Menu className="w-4 h-4 text-stone-700" />}
               </button>
             </div>
           </div>
@@ -333,7 +333,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-x-0 top-[80px] z-40 glass border-b border-stone-200 shadow-2xl md:hidden"
+            className="fixed inset-x-0 top-[48px] z-40 glass border-b border-stone-200 shadow-2xl md:hidden"
           >
             <div className="px-4 py-6 space-y-2">
               <Link to="/" className="block py-3 px-4 rounded-xl text-stone-700 font-bold hover:bg-stone-50">

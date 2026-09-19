@@ -38,7 +38,7 @@ export default function FlashSale() {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-r from-red-600 via-orange-600 to-red-600 text-white py-2 px-4 relative overflow-hidden"
+      className="bg-gradient-to-r from-red-600 via-orange-600 to-red-600 text-white py-1.5 px-4 relative overflow-hidden"
     >
       {/* Animated background */}
       <div className="absolute inset-0 opacity-20">
