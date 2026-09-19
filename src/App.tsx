@@ -39,6 +39,8 @@ import PromoCodes from './pages/PromoCodes';
 import ReturnRequest from './pages/ReturnRequest';
 import ProducerStories from './pages/ProducerStories';
 import GiftFinder from './pages/GiftFinder';
+import ProductDetail from './pages/ProductDetail';
+import SearchResults from './pages/SearchResults';
 import FAQ from './pages/FAQ';
 import PublicOrderTracking from './pages/PublicOrderTracking';
 import TermsPrivacy from './pages/TermsPrivacy';
@@ -101,6 +103,8 @@ function AppRoutes() {
           <Route path="/return-request" element={<ReturnRequest />} />
           <Route path="/producers" element={<ProducerStories />} />
           <Route path="/gift-finder" element={<GiftFinder />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/search" element={<SearchResults />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/track-order" element={<PublicOrderTracking />} />
           <Route path="/terms" element={<TermsPrivacy />} />

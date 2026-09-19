@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal, ArrowDown, Leaf, Award, Truck, Heart, Star, 
 import { Product } from '../types';
 import { categories } from '../data/products';
 import { useStore } from '../contexts/StoreContext';
-import ProductCard from '../components/ProductCard';
+import ProductCardEnhanced from '../components/ProductCardEnhanced';
 import ProductModal from '../components/ProductModal';
 import RecentlyViewed from '../components/RecentlyViewed';
 import AdvancedSearch from '../components/AdvancedSearch';
@@ -289,7 +289,7 @@ export default function Home() {
           {filteredProducts.length > 0 ? (
             <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} onViewDetails={setSelectedProduct} index={index} />
+                <ProductCardEnhanced key={product.id} product={product} onViewDetails={setSelectedProduct} index={index} />
               ))}
             </motion.div>
           ) : (
@@ -309,6 +309,68 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+      </section>
+
+      {/* New Arrivals Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-10"
+        >
+          <span className="inline-block px-4 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-semibold mb-4">
+            ✨ Just Arrived
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+            New Arrivals
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 text-lg max-w-2xl mx-auto">
+            Discover the latest additions to our curated collection
+          </p>
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {products.slice(0, 4).map((product, index) => (
+            <ProductCardEnhanced
+              key={product.id}
+              product={product}
+              onViewDetails={setSelectedProduct}
+              index={index}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Best Sellers Section */}
+      <section className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-stone-900 dark:to-stone-800 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <span className="inline-block px-4 py-1.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-semibold mb-4">
+              ⭐ Customer Favorites
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+              Best Sellers
+            </h2>
+            <p className="text-stone-600 dark:text-stone-400 text-lg max-w-2xl mx-auto">
+              Our most loved products, tried and tested by thousands of happy customers
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.sort((a, b) => b.rating - a.rating).slice(0, 3).map((product, index) => (
+              <ProductCardEnhanced
+                key={product.id}
+                product={product}
+                onViewDetails={setSelectedProduct}
+                index={index}
+              />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Recently Viewed */}

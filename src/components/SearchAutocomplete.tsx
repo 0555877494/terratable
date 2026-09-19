@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, TrendingUp, Clock } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { Product } from '../types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SearchAutocomplete() {
   const { products } = useStore();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -70,6 +71,14 @@ export default function SearchAutocomplete() {
     inputRef.current?.focus();
   };
 
+  const handleSearch = (searchQuery: string) => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setIsOpen(false);
+      setQuery('');
+    }
+  };
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* Search Input */}
@@ -85,7 +94,13 @@ export default function SearchAutocomplete() {
             setSelectedIndex(-1);
           }}
           onFocus={() => setIsOpen(true)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && query.trim()) {
+              handleSearch(query);
+            } else {
+              handleKeyDown(e);
+            }
+          }}
           placeholder="Search artisan foods, origins, categories..."
           className="w-full pl-12 pr-12 py-4 rounded-2xl border-2 border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all text-base"
         />
@@ -203,6 +218,19 @@ export default function SearchAutocomplete() {
                 <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
                   Try a different search term
                 </p>
+              </div>
+            )}
+
+            {/* View All Results Button */}
+            {suggestions.length > 0 && (
+              <div className="p-3 border-t border-stone-100 dark:border-stone-700">
+                <button
+                  onClick={() => handleSearch(query)}
+                  className="w-full py-3 gradient-bg text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                >
+                  <Search className="w-4 h-4" />
+                  View All Results for "{query}"
+                </button>
               </div>
             )}
           </motion.div>
