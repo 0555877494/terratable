@@ -29,6 +29,15 @@ import PWAInstallPrompt from './components/PWAInstallPrompt';
 import AbandonedCartRecovery from './components/AbandonedCartRecovery';
 import AdvancedAnalytics from './components/AdvancedAnalytics';
 import CustomerSegmentation from './components/CustomerSegmentation';
+import InventoryManagement from './pages/InventoryManagement';
+import AdminOrderManagement from './pages/AdminOrderManagement';
+import EmailSMSNotifications from './pages/EmailSMSNotifications';
+import MultiVendorMarketplace from './pages/MultiVendorMarketplace';
+import SubscriptionManagement from './pages/SubscriptionManagement';
+import OrderTrackingPage from './pages/OrderTrackingPage';
+import GiftCardBalanceChecker from './pages/GiftCardBalanceChecker';
+import RecentlyViewedPage from './pages/RecentlyViewedPage';
+import ProductComparisonPage from './pages/ProductComparisonPage';
 import { registerServiceWorker, requestNotificationPermission } from './lib/serviceWorker';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -182,6 +191,35 @@ function AppRoutes() {
               <CustomerSegmentation />
             </ProtectedRoute>
           } />
+          <Route path="/inventory" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <InventoryManagement />
+            </ProtectedRoute>
+          } />
+          <Route path="/orders-management" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminOrderManagement />
+            </ProtectedRoute>
+          } />
+          <Route path="/notifications" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <EmailSMSNotifications />
+            </ProtectedRoute>
+          } />
+          <Route path="/vendors" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <MultiVendorMarketplace />
+            </ProtectedRoute>
+          } />
+          <Route path="/subscriptions-management" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <SubscriptionManagement />
+            </ProtectedRoute>
+          } />
+          <Route path="/order-tracking-page" element={<OrderTrackingPage />} />
+          <Route path="/gift-balance" element={<GiftCardBalanceChecker />} />
+          <Route path="/recently-viewed" element={<RecentlyViewedPage />} />
+          <Route path="/compare" element={<ProductComparisonPage />} />
           <Route path="/customer" element={
             <ProtectedRoute allowedRoles={['customer']}>
               <CustomerDashboard />
