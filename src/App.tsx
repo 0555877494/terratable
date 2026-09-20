@@ -23,6 +23,8 @@ import RecentlyViewed from './components/RecentlyViewed';
 import WhatsNewModal from './components/WhatsNewModal';
 import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import LiveChatModal from './components/LiveChatModal';
+import OnboardingModal from './components/OnboardingModal';
+import OrderStatusWidget from './components/OrderStatusWidget';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -122,6 +124,8 @@ function AppRoutes() {
         isOpen={showLiveChatModal} 
         onClose={() => setShowLiveChatModal(false)} 
       />
+      <OnboardingModal />
+      <OrderStatusWidget />
 
       <main className="pt-[48px] pb-12 md:pb-0">
         <Breadcrumbs />

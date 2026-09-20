@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Gift, Zap, Heart, ArrowRight } from 'lucide-react';
 
 interface WhatsNewModalProps {
   isOpen: boolean;
@@ -16,19 +16,19 @@ export default function WhatsNewModal({ isOpen, onClose }: WhatsNewModalProps) {
       color: 'from-amber-500 to-orange-500'
     },
     {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Gift className="w-6 h-6" />,
       title: 'Gift Finder Quiz',
       description: 'Find the perfect gift with our interactive 5-step quiz',
       color: 'from-rose-500 to-pink-500'
     },
     {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Zap className="w-6 h-6" />,
       title: 'Flash Deals',
       description: 'Limited-time offers with countdown timers and stock alerts',
       color: 'from-purple-500 to-indigo-500'
     },
     {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Heart className="w-6 h-6" />,
       title: 'Smart Wishlist',
       description: 'Price drop alerts, social sharing, and product comparison',
       color: 'from-emerald-500 to-teal-500'
@@ -108,9 +108,10 @@ export default function WhatsNewModal({ isOpen, onClose }: WhatsNewModalProps) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onClose}
-                  className="px-8 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+                  className="px-8 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto"
                 >
                   Got it!
+                  <ArrowRight className="w-4 h-4" />
                 </motion.button>
               </div>
             </div>
