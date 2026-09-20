@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ShoppingBag } from 'lucide-react';
+import { Sparkles, ShoppingBag, Star } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
 import { Product } from '../types';
@@ -16,14 +16,18 @@ export default function ProductRecommendations({
   category,
   limit = 4 
 }: ProductRecommendationsProps) {
-  const { products, recentlyViewed, orders } = useStore();
+  const { products, addToCart } = useStore();
   const { showToast } = useToast();
   const [recommendations, setRecommendations] = useState<Product[]>([]);
 
   useEffect(() => {
+    generateRecommendations();
+  }, [currentProductId, category, products]);
+
+  const generateRecommendations = () => {
     let recommended: Product[] = [];
 
-    // Strategy 1: Same category as current product
+    // Strategy 1: Same category
     if (category) {
       recommended = products.filter(p => 
         p.category === category && 
@@ -31,20 +35,20 @@ export default function ProductRecommendations({
       );
     }
 
-    // Strategy 2: Based on recently viewed
-    if (recommended.length < limit && recentlyViewed.length > 0) {
-      const viewedProducts = recentlyViewed
-        .map(id => products.find(p => p.id === id))
-        .filter(Boolean) as Product[];
-
-      const viewedCategories = viewedProducts.map(p => p.category);
-      const categoryCounts = viewedCategories.reduce((acc, cat) => {
+    // Strategy 2: Based on recently viewed (if available)
+    const recentlyViewed = JSON.parse(localStorage.getItem('terra_recently_viewed') || '[]');
+    if (recentlyViewed.length > 0 && recommended.length < limit) {
+      const viewedCategories = recentlyViewed
+        .map((id: string) => products.find(p => p.id === id)?.category)
+        .filter(Boolean) as string[];
+      
+      const categoryCounts = viewedCategories.reduce((acc: Record<string, number>, cat: string) => {
         acc[cat] = (acc[cat] || 0) + 1;
         return acc;
       }, {} as Record<string, number>);
 
       const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-
+      
       if (topCategory) {
         const categoryProducts = products.filter(p => 
           p.category === topCategory && 
@@ -55,30 +59,7 @@ export default function ProductRecommendations({
       }
     }
 
-    // Strategy 3: Based on purchase history
-    if (recommended.length < limit && orders.length > 0) {
-      const purchasedCategories = orders
-        .flatMap(order => order.items)
-        .map(item => item.product.category);
-
-      const purchaseCategoryCounts = purchasedCategories.reduce((acc, cat) => {
-        acc[cat] = (acc[cat] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const topPurchaseCategory = Object.entries(purchaseCategoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-
-      if (topPurchaseCategory) {
-        const purchaseCategoryProducts = products.filter(p => 
-          p.category === topPurchaseCategory && 
-          p.id !== currentProductId &&
-          !recommended.find(r => r.id === p.id)
-        );
-        recommended = [...recommended, ...purchaseCategoryProducts];
-      }
-    }
-
-    // Strategy 4: Top rated products
+    // Strategy 3: Top rated products
     if (recommended.length < limit) {
       const topRated = products
         .filter(p => p.id !== currentProductId && !recommended.find(r => r.id === p.id))
@@ -92,10 +73,9 @@ export default function ProductRecommendations({
     );
 
     setRecommendations(unique.slice(0, limit));
-  }, [products, recentlyViewed, orders, currentProductId, category, limit]);
+  };
 
   const handleAddToCart = (product: Product) => {
-    const { addToCart } = useStore();
     addToCart(product);
     showToast('success', `${product.name} added to cart!`);
   };
@@ -137,8 +117,9 @@ export default function ProductRecommendations({
                 {product.name}
               </h4>
               <div className="flex items-center gap-1 mb-2">
-                <span className="text-xs text-stone-500 dark:text-stone-400">
-                  ⭐ {product.rating}
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                <span className="text-xs text-stone-600 dark:text-stone-400">
+                  {product.rating} ({product.reviews})
                 </span>
               </div>
               <div className="flex items-center justify-between">

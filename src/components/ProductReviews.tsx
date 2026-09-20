@@ -1,300 +1,417 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Star, ThumbsUp, MessageCircle, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Upload, X, ThumbsUp, Camera, Send } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 
-interface Review {
-  id: string;
-  userName: string;
-  rating: number;
-  comment: string;
-  date: string;
-  helpful: number;
-}
-
-interface Props {
+interface ProductReviewsProps {
   productId: string;
-  productName: string;
+  productName?: string;
 }
 
-export default function ProductReviews({ productId, productName }: Props) {
+export default function ProductReviews({ productId, productName }: ProductReviewsProps) {
+  const { user } = useAuth();
   const { showToast } = useToast();
-  const [reviews, setReviews] = useState<Review[]>([
-    {
-      id: '1',
-      userName: 'Sarah M.',
-      rating: 5,
-      comment: 'Absolutely amazing quality! The flavor is incredible and you can tell it\'s made with care. Will definitely order again.',
-      date: '2024-01-15',
-      helpful: 24
-    },
-    {
-      id: '2',
-      userName: 'James K.',
-      rating: 4,
-      comment: 'Great product, very fresh and well-packaged. Shipping was fast too. Only giving 4 stars because I wish it was a bit larger.',
-      date: '2024-01-12',
-      helpful: 18
-    },
-    {
-      id: '3',
-      userName: 'Maria L.',
-      rating: 5,
-      comment: 'This is hands down the best I\'ve ever had. You can taste the difference in quality. Highly recommend!',
-      date: '2024-01-10',
-      helpful: 32
-    }
-  ]);
-
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({
     rating: 5,
     comment: '',
-    userName: ''
+    images: [] as string[]
   });
+  const [uploading, setUploading] = useState(false);
 
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  useEffect(() => {
+    loadReviews();
+  }, [productId]);
+
+  const loadReviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          profiles:user_id (full_name, avatar_url)
+        `)
+        .eq('product_id', productId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const uploadedUrls: string[] = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${productId}/${Date.now()}_${i}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from('reviews')
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('reviews')
+          .getPublicUrl(fileName);
+
+        uploadedUrls.push(publicUrl);
+      }
+
+      setNewReview({ ...newReview, images: [...newReview.images, ...uploadedUrls] });
+      showToast('success', 'Images uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      showToast('error', 'Failed to upload images');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      showToast('error', 'Please login to submit a review');
+      return;
+    }
+
+    if (!newReview.comment.trim()) {
+      showToast('error', 'Please write a comment');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .insert({
+          product_id: productId,
+          user_id: user.id,
+          rating: newReview.rating,
+          comment: newReview.comment,
+          images: newReview.images
+        });
+
+      if (error) throw error;
+
+      // Update product rating
+      const { data: allReviews } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('product_id', productId);
+
+      if (allReviews) {
+        const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+        await supabase
+          .from('products')
+          .update({ 
+            rating: avgRating,
+            reviews_count: allReviews.length 
+          })
+          .eq('id', productId);
+      }
+
+      showToast('success', 'Review submitted successfully!');
+      setNewReview({ rating: 5, comment: '', images: [] });
+      setShowReviewForm(false);
+      loadReviews();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      showToast('error', 'Failed to submit review');
+    }
+  };
+
+  const handleMarkHelpful = async (reviewId: string) => {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .update({ helpful_count: supabase.rpc('increment', { row_id: reviewId }) })
+        .eq('id', reviewId);
+
+      if (error) throw error;
+
+      loadReviews();
+      showToast('success', 'Thanks for your feedback!');
+    } catch (error) {
+      console.error('Error marking helpful:', error);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setNewReview({
+      ...newReview,
+      images: newReview.images.filter((_, i) => i !== index)
+    });
+  };
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  const ratingDistribution = [5, 4, 3, 2, 1].map(stars => ({
-    stars,
-    count: reviews.filter(r => r.rating === stars).length,
-    percentage: reviews.length > 0 ? (reviews.filter(r => r.rating === stars).length / reviews.length) * 100 : 0
-  }));
-
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newReview.userName || !newReview.comment) {
-      showToast('error', 'Please fill in all fields');
-      return;
-    }
-
-    const review: Review = {
-      id: Date.now().toString(),
-      userName: newReview.userName,
-      rating: newReview.rating,
-      comment: newReview.comment,
-      date: new Date().toISOString().split('T')[0],
-      helpful: 0
-    };
-
-    setReviews([review, ...reviews]);
-    setNewReview({ rating: 5, comment: '', userName: '' });
-    setShowReviewForm(false);
-    showToast('success', 'Review submitted successfully!');
-  };
-
-  const handleHelpful = (reviewId: string) => {
-    setReviews(reviews.map(r => 
-      r.id === reviewId ? { ...r, helpful: r.helpful + 1 } : r
-    ));
-    showToast('success', 'Thanks for your feedback!');
-  };
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 gradient-bg"></div>
+        <p className="mt-4 text-stone-600 dark:text-stone-400">Loading reviews...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white dark:bg-stone-800 rounded-2xl border-2 border-stone-200 dark:border-stone-700 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
-          Customer Reviews
-        </h3>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowReviewForm(!showReviewForm)}
-          className="px-5 py-2.5 gradient-bg text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
-        >
-          <MessageCircle className="w-4 h-4" />
-          Write a Review
-        </motion.button>
+        <div>
+          <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+            Customer Reviews
+          </h3>
+          <div className="flex items-center gap-3">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-5 h-5 ${
+                    i < Math.floor(averageRating)
+                      ? 'fill-amber-400 text-amber-400'
+                      : 'fill-stone-200 text-stone-200'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-lg font-bold text-stone-900 dark:text-stone-100">
+              {averageRating.toFixed(1)}
+            </span>
+            <span className="text-stone-500 dark:text-stone-400">
+              ({reviews.length} reviews)
+            </span>
+          </div>
+        </div>
+        {user && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowReviewForm(!showReviewForm)}
+            className="px-6 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg flex items-center gap-2"
+          >
+            <Star className="w-5 h-5" />
+            Write a Review
+          </motion.button>
+        )}
       </div>
 
       {/* Review Form */}
-      {showReviewForm && (
-        <motion.form
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          onSubmit={handleSubmitReview}
-          className="mb-6 p-5 bg-stone-50 dark:bg-stone-700/50 rounded-xl space-y-4"
-        >
-          <div>
-            <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
-              Your Name
-            </label>
-            <input
-              type="text"
-              value={newReview.userName}
-              onChange={e => setNewReview({ ...newReview, userName: e.target.value })}
-              placeholder="Enter your name"
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 focus:border-amber-400 outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
-              Rating
-            </label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map(star => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setNewReview({ ...newReview, rating: star })}
-                  className="transition-transform hover:scale-110"
-                >
-                  <Star
-                    className={`w-8 h-8 ${
-                      star <= newReview.rating
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'fill-stone-200 text-stone-200'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
-              Your Review
-            </label>
-            <textarea
-              value={newReview.comment}
-              onChange={e => setNewReview({ ...newReview, comment: e.target.value })}
-              placeholder="Share your experience with this product..."
-              rows={4}
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 focus:border-amber-400 outline-none resize-none"
-            />
-          </div>
-
-          <div className="flex gap-3">
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 py-2.5 gradient-bg text-white rounded-xl font-bold shadow-lg flex items-center gap-2"
-            >
-              <Send className="w-4 h-4" />
-              Submit Review
-            </motion.button>
-            <button
-              type="button"
-              onClick={() => setShowReviewForm(false)}
-              className="px-6 py-2.5 border-2 border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-bold hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        </motion.form>
-      )}
-
-      {/* Rating Summary */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8 pb-8 border-b-2 border-stone-200 dark:border-stone-700">
-        <div className="text-center">
-          <div className="text-5xl font-bold gradient-text mb-2">
-            {averageRating.toFixed(1)}
-          </div>
-          <div className="flex justify-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-6 h-6 ${
-                  i < Math.round(averageRating)
-                    ? 'fill-amber-400 text-amber-400'
-                    : 'fill-stone-200 text-stone-200'
-                }`}
-              />
-            ))}
-          </div>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
-            Based on {reviews.length} reviews
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          {ratingDistribution.map(({ stars, count, percentage }) => (
-            <div key={stars} className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-stone-700 dark:text-stone-300 w-8">
-                {stars}★
-              </span>
-              <div className="flex-1 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${percentage}%` }}
-                  transition={{ duration: 0.5, delay: 0.1 * (5 - stars) }}
-                  className="h-full gradient-bg rounded-full"
-                />
-              </div>
-              <span className="text-sm text-stone-500 dark:text-stone-400 w-8">
-                {count}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reviews List */}
-      <div className="space-y-6">
-        {reviews.map((review, index) => (
-          <motion.div
-            key={review.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="p-5 bg-stone-50 dark:bg-stone-700/50 rounded-xl"
+      <AnimatePresence>
+        {showReviewForm && (
+          <motion.form
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            onSubmit={handleSubmitReview}
+            className="mb-6 p-6 bg-stone-50 dark:bg-stone-700/50 rounded-xl space-y-4"
           >
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-10 h-10 gradient-bg rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">{review.userName[0]}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-stone-900 dark:text-stone-100">
-                      {review.userName}
-                    </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">
-                      {new Date(review.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
+            {/* Rating */}
+            <div>
+              <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
+                Rating
+              </label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <motion.button
+                    key={star}
+                    type="button"
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setNewReview({ ...newReview, rating: star })}
+                  >
                     <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < review.rating
+                      className={`w-8 h-8 ${
+                        star <= newReview.rating
                           ? 'fill-amber-400 text-amber-400'
                           : 'fill-stone-200 text-stone-200'
                       }`}
                     />
-                  ))}
-                </div>
+                  </motion.button>
+                ))}
               </div>
             </div>
 
-            <p className="text-stone-700 dark:text-stone-300 mb-4 leading-relaxed">
-              {review.comment}
-            </p>
+            {/* Comment */}
+            <div>
+              <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
+                Your Review
+              </label>
+              <textarea
+                value={newReview.comment}
+                onChange={e => setNewReview({ ...newReview, comment: e.target.value })}
+                placeholder="Share your experience with this product..."
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 focus:border-amber-400 outline-none resize-none"
+              />
+            </div>
 
-            <button
-              onClick={() => handleHelpful(review.id)}
-              className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+            {/* Image Upload */}
+            <div>
+              <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
+                Add Photos (Optional)
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {newReview.images.map((image, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative w-20 h-20 rounded-xl overflow-hidden"
+                  >
+                    <img src={image} alt={`Review photo ${index + 1}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                ))}
+                <label className="w-20 h-20 border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                  {uploading ? (
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 gradient-bg"></div>
+                  ) : (
+                    <>
+                      <Camera className="w-6 h-6 text-stone-400 mb-1" />
+                      <span className="text-xs text-stone-500">Upload</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex gap-3">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg flex items-center justify-center gap-2"
+              >
+                <Send className="w-5 h-5" />
+                Submit Review
+              </motion.button>
+              <button
+                type="button"
+                onClick={() => setShowReviewForm(false)}
+                className="px-6 py-3 border-2 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 rounded-xl font-bold hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.form>
+        )}
+      </AnimatePresence>
+
+      {/* Reviews List */}
+      {reviews.length === 0 ? (
+        <div className="text-center py-12">
+          <Star className="w-16 h-16 mx-auto text-stone-300 dark:text-stone-600 mb-4" />
+          <p className="text-stone-500 dark:text-stone-400">No reviews yet</p>
+          <p className="text-sm text-stone-400 dark:text-stone-500 mt-2">
+            Be the first to review this product!
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {reviews.map((review, index) => (
+            <motion.div
+              key={review.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="p-5 bg-stone-50 dark:bg-stone-700/50 rounded-xl"
             >
-              <ThumbsUp className="w-4 h-4" />
-              Helpful ({review.helpful})
-            </button>
-          </motion.div>
-        ))}
-      </div>
+              {/* Review Header */}
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white font-bold">
+                    {review.profiles?.full_name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-stone-900 dark:text-stone-100">
+                      {review.profiles?.full_name || 'Anonymous'}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < review.rating
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'fill-stone-200 text-stone-200'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-stone-500 dark:text-stone-400">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Review Comment */}
+              <p className="text-stone-700 dark:text-stone-300 mb-3 leading-relaxed">
+                {review.comment}
+              </p>
+
+              {/* Review Images */}
+              {review.images && review.images.length > 0 && (
+                <div className="flex gap-2 mb-3 overflow-x-auto pb-2">
+                  {review.images.map((image: string, idx: number) => (
+                    <img
+                      key={idx}
+                      src={image}
+                      alt={`Review photo ${idx + 1}`}
+                      className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Helpful Button */}
+              <button
+                onClick={() => handleMarkHelpful(review.id)}
+                className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              >
+                <ThumbsUp className="w-4 h-4" />
+                Helpful ({review.helpful_count || 0})
+              </button>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
