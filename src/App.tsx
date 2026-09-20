@@ -64,6 +64,7 @@ import ProducerStories from './pages/ProducerStories';
 import GiftFinder from './pages/GiftFinder';
 import ProductDetail from './pages/ProductDetail';
 import SearchResults from './pages/SearchResults';
+import WishlistSharePage from './pages/WishlistSharePage';
 import FAQ from './pages/FAQ';
 import PublicOrderTracking from './pages/PublicOrderTracking';
 import TermsPrivacy from './pages/TermsPrivacy';
@@ -176,6 +177,7 @@ function AppRoutes() {
           <Route path="/gift-finder" element={<GiftFinder />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/wishlist/share" element={<WishlistSharePage />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/track-order" element={<PublicOrderTracking />} />
           <Route path="/terms" element={<TermsPrivacy />} />
