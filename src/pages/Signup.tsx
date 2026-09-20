@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Truck, ShoppingBag, Sparkles } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Truck, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { UserRole } from '../types';
+import Logo from '../components/Logo';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -16,7 +17,7 @@ export default function Signup() {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (password.length < 6) {
@@ -25,26 +26,28 @@ export default function Signup() {
     }
     setLoading(true);
 
-    setTimeout(() => {
-      const result = signup(name, email, password, role);
-      if (result.success) {
-        if (role === 'delivery') navigate('/delivery');
-        else navigate('/customer');
-      } else {
-        setError(result.message);
-      }
-      setLoading(false);
-    }, 800);
+    const result = await signup(name, email, password, role);
+    
+    if (result.success) {
+      if (role === 'delivery') navigate('/delivery');
+      else navigate('/customer');
+    } else {
+      setError(result.message);
+    }
+    
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-16 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-sage-50 via-cream-100 to-terra-50" />
       <div className="absolute inset-0">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-sage-200/40 rounded-full blur-[80px]" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-terra-200/30 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gold-200/20 rounded-full blur-[80px]" />
+        <img 
+          src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1920&q=80" 
+          alt="" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-950/90 via-stone-900/80 to-emerald-950/70" />
       </div>
 
       <motion.div
@@ -53,20 +56,19 @@ export default function Signup() {
         transition={{ duration: 0.6, type: 'spring' }}
         className="relative w-full max-w-md"
       >
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-terra-200/30 border border-white/50 p-8 sm:p-10">
+        <div className="glass rounded-3xl shadow-2xl p-10">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <motion.div
               initial={{ scale: 0, rotate: 180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-              className="relative w-16 h-16 bg-gradient-to-br from-sage-500 via-sage-600 to-terra-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-sage-500/30"
+              className="relative mx-auto mb-6"
             >
-              <Sparkles className="w-7 h-7 text-white" />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent" />
+              <Logo className="w-20 h-20" />
             </motion.div>
-            <h1 className="font-serif text-3xl font-bold text-terra-900 mb-2">Join the Family</h1>
-            <p className="text-terra-500">Start your artisan food journey today</p>
+            <h1 className="font-serif text-4xl font-bold text-stone-900 mb-3">Join the Family</h1>
+            <p className="text-stone-600 text-lg">Start your artisan food journey today</p>
           </div>
 
           {/* Error */}
@@ -74,68 +76,68 @@ export default function Signup() {
             <motion.div
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
-              className="mb-5 p-4 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-600 flex items-center gap-2"
+              className="mb-6 p-4 bg-rose-50 border-2 border-rose-200 rounded-2xl text-sm text-rose-700 flex items-center gap-3"
             >
-              <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-xs">!</span>
+              <div className="w-6 h-6 bg-rose-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold">!</span>
               </div>
               {error}
             </motion.div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-2">Full Name</label>
+              <label className="block text-sm font-bold text-stone-700 mb-2">Full Name</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-terra-400 group-focus-within:text-terra-600 transition-colors" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-terra-100 focus:border-terra-300 focus:ring-4 focus:ring-terra-50 outline-none transition-all bg-white/50 text-terra-800 placeholder:text-terra-400"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-stone-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-base"
                   placeholder="Your full name"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-2">Email Address</label>
+              <label className="block text-sm font-bold text-stone-700 mb-2">Email Address</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-terra-400 group-focus-within:text-terra-600 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-terra-100 focus:border-terra-300 focus:ring-4 focus:ring-terra-50 outline-none transition-all bg-white/50 text-terra-800 placeholder:text-terra-400"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-stone-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-base"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-2">Password</label>
+              <label className="block text-sm font-bold text-stone-700 mb-2">Password</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-terra-400 group-focus-within:text-terra-600 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="w-full pl-11 pr-11 py-3.5 rounded-xl border border-terra-100 focus:border-terra-300 focus:ring-4 focus:ring-terra-50 outline-none transition-all bg-white/50 text-terra-800 placeholder:text-terra-400"
+                  className="w-full pl-12 pr-12 py-4 rounded-xl border-2 border-stone-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 outline-none transition-all bg-white text-stone-800 placeholder:text-stone-400 text-base"
                   placeholder="Min. 6 characters"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-terra-400 hover:text-terra-600 transition-colors">
-                  {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors">
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
             {/* Role Selection */}
             <div>
-              <label className="block text-sm font-semibold text-terra-700 mb-3">How will you use Terra & Table?</label>
+              <label className="block text-sm font-bold text-stone-700 mb-3">How will you use Terra & Table?</label>
               <div className="grid grid-cols-2 gap-3">
                 <motion.button
                   type="button"
@@ -144,27 +146,27 @@ export default function Signup() {
                   onClick={() => setRole('customer')}
                   className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all ${
                     role === 'customer'
-                      ? 'border-terra-400 bg-gradient-to-b from-terra-50 to-cream-50 shadow-lg shadow-terra-100/50'
-                      : 'border-terra-100 hover:border-terra-200 hover:bg-terra-25'
+                      ? 'border-amber-400 bg-amber-50 shadow-lg shadow-amber-500/20'
+                      : 'border-stone-200 hover:border-stone-300'
                   }`}
                 >
                   {role === 'customer' && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute top-2 right-2 w-5 h-5 bg-terra-500 rounded-full flex items-center justify-center"
+                      className="absolute top-2 right-2 w-6 h-6 gradient-bg rounded-full flex items-center justify-center"
                     >
-                      <span className="text-white text-[10px]">✓</span>
+                      <span className="text-white text-xs font-bold">✓</span>
                     </motion.div>
                   )}
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role === 'customer' ? 'bg-terra-100' : 'bg-terra-50'}`}>
-                    <ShoppingBag className={`w-6 h-6 ${role === 'customer' ? 'text-terra-600' : 'text-terra-400'}`} />
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${role === 'customer' ? 'gradient-bg' : 'bg-stone-100'}`}>
+                    <ShoppingBag className={`w-7 h-7 ${role === 'customer' ? 'text-white' : 'text-stone-400'}`} />
                   </div>
                   <div className="text-center">
-                    <span className={`text-sm font-semibold block ${role === 'customer' ? 'text-terra-800' : 'text-terra-600'}`}>
+                    <span className={`text-sm font-bold block ${role === 'customer' ? 'text-amber-800' : 'text-stone-600'}`}>
                       Shop & Order
                     </span>
-                    <span className="text-[11px] text-terra-400">Browse & buy</span>
+                    <span className="text-[11px] text-stone-500">Browse & buy</span>
                   </div>
                 </motion.button>
 
@@ -175,27 +177,27 @@ export default function Signup() {
                   onClick={() => setRole('delivery')}
                   className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all ${
                     role === 'delivery'
-                      ? 'border-sage-400 bg-gradient-to-b from-sage-50 to-cream-50 shadow-lg shadow-sage-100/50'
-                      : 'border-terra-100 hover:border-terra-200 hover:bg-terra-25'
+                      ? 'border-emerald-400 bg-emerald-50 shadow-lg shadow-emerald-500/20'
+                      : 'border-stone-200 hover:border-stone-300'
                   }`}
                 >
                   {role === 'delivery' && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute top-2 right-2 w-5 h-5 bg-sage-500 rounded-full flex items-center justify-center"
+                      className="absolute top-2 right-2 w-6 h-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center"
                     >
-                      <span className="text-white text-[10px]">✓</span>
+                      <span className="text-white text-xs font-bold">✓</span>
                     </motion.div>
                   )}
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role === 'delivery' ? 'bg-sage-100' : 'bg-sage-50'}`}>
-                    <Truck className={`w-6 h-6 ${role === 'delivery' ? 'text-sage-600' : 'text-terra-400'}`} />
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${role === 'delivery' ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' : 'bg-stone-100'}`}>
+                    <Truck className={`w-7 h-7 ${role === 'delivery' ? 'text-white' : 'text-stone-400'}`} />
                   </div>
                   <div className="text-center">
-                    <span className={`text-sm font-semibold block ${role === 'delivery' ? 'text-sage-800' : 'text-terra-600'}`}>
+                    <span className={`text-sm font-bold block ${role === 'delivery' ? 'text-emerald-800' : 'text-stone-600'}`}>
                       Deliver Orders
                     </span>
-                    <span className="text-[11px] text-terra-400">Earn & deliver</span>
+                    <span className="text-[11px] text-stone-500">Earn & deliver</span>
                   </div>
                 </motion.button>
               </div>
@@ -206,20 +208,20 @@ export default function Signup() {
               whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-sage-600 via-sage-700 to-terra-700 text-white rounded-xl font-semibold text-base shadow-xl shadow-sage-500/20 hover:shadow-2xl hover:shadow-sage-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-70 mt-6"
+              className="w-full py-4 bg-gradient-to-br from-emerald-500 to-amber-600 text-white rounded-xl font-bold text-lg shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all flex items-center justify-center gap-2 disabled:opacity-70 mt-7"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <>Create Account <ArrowRight className="w-4 h-4" /></>
+                <>Create Account <ArrowRight className="w-5 h-5" /></>
               )}
             </motion.button>
           </form>
 
           {/* Footer */}
-          <p className="text-center text-sm text-terra-500 mt-6">
+          <p className="text-center text-stone-600 mt-7">
             Already have an account?{' '}
-            <Link to="/login" className="text-terra-700 font-semibold hover:text-terra-900 transition-colors">Sign in</Link>
+            <Link to="/login" className="text-amber-700 font-bold hover:text-amber-800 transition-colors">Sign in</Link>
           </p>
         </div>
       </motion.div>

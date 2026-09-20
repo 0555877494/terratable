@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, UserRole } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+import { supabase, shouldUseSupabase } from '../lib/supabase';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => { success: boolean; message: string };
-  signup: (name: string, email: string, password: string, role: UserRole) => { success: boolean; message: string };
+  login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  signup: (name: string, email: string, password: string, role: UserRole) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   users: User[];
   updateUserRole: (userId: string, role: UserRole) => void;
@@ -14,7 +14,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const defaultUsers: User[] = [
+// Demo users for fallback (when Supabase is not configured)
+const demoUsers: User[] = [
   {
     id: 'admin-1',
     name: 'Admin User',
@@ -51,61 +52,180 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('terra_users');
-    return saved ? JSON.parse(saved) : defaultUsers;
+    return saved ? JSON.parse(saved) : demoUsers;
   });
+
+  // Initialize auth state from Supabase session
+  useEffect(() => {
+    if (shouldUseSupabase()) {
+      // Check for existing session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          loadUserProfile(session.user.id);
+        }
+      });
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if (event === 'SIGNED_IN' && session?.user) {
+            await loadUserProfile(session.user.id);
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null);
+          }
+        }
+      );
+
+      return () => subscription.unsubscribe();
+    } else {
+      // Fallback to localStorage
+      const savedUser = localStorage.getItem('terra_current_user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('terra_users', JSON.stringify(users));
   }, [users]);
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('terra_current_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
+  // Load user profile from Supabase
+  const loadUserProfile = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
 
-  const login = (email: string, password: string) => {
-    const found = users.find(u => u.email === email && u.password === password);
-    if (found) {
-      setUser(found);
-      localStorage.setItem('terra_current_user', JSON.stringify(found));
-      return { success: true, message: 'Login successful!' };
+    if (profile) {
+      const user: User = {
+        id: profile.id,
+        name: profile.full_name || '',
+        email: profile.email,
+        password: '', // Not needed with Supabase auth
+        role: profile.role as UserRole,
+        phone: profile.phone,
+        address: profile.address,
+        joinedDate: profile.created_at?.split('T')[0] || new Date().toISOString().split('T')[0]
+      };
+      setUser(user);
     }
-    return { success: false, message: 'Invalid email or password.' };
   };
 
-  const signup = (name: string, email: string, password: string, role: UserRole) => {
-    if (users.find(u => u.email === email)) {
-      return { success: false, message: 'Email already registered.' };
+  const login = async (email: string, password: string) => {
+    if (shouldUseSupabase()) {
+      // Use Supabase auth
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        return { success: false, message: error.message };
+      }
+
+      if (data.user) {
+        await loadUserProfile(data.user.id);
+        return { success: true, message: 'Login successful!' };
+      }
+
+      return { success: false, message: 'Login failed' };
+    } else {
+      // Fallback to demo users
+      const found = users.find(u => u.email === email && u.password === password);
+      if (found) {
+        setUser(found);
+        localStorage.setItem('terra_current_user', JSON.stringify(found));
+        return { success: true, message: 'Login successful!' };
+      }
+      return { success: false, message: 'Invalid email or password.' };
     }
+  };
+
+  const signup = async (name: string, email: string, password: string, role: UserRole) => {
     if (role === 'admin') {
       return { success: false, message: 'Admin registration is not allowed.' };
     }
-    const newUser: User = {
-      id: uuidv4(),
-      name,
-      email,
-      password,
-      role,
-      joinedDate: new Date().toISOString().split('T')[0]
-    };
-    setUsers(prev => [...prev, newUser]);
-    setUser(newUser);
-    localStorage.setItem('terra_current_user', JSON.stringify(newUser));
-    return { success: true, message: 'Account created successfully!' };
+
+    if (shouldUseSupabase()) {
+      // Use Supabase auth
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            role: role,
+          },
+        },
+      });
+
+      if (error) {
+        return { success: false, message: error.message };
+      }
+
+      if (data.user) {
+        // Update profile with role
+        await supabase
+          .from('profiles')
+          .update({ role })
+          .eq('id', data.user.id);
+
+        await loadUserProfile(data.user.id);
+        return { success: true, message: 'Account created successfully!' };
+      }
+
+      return { success: false, message: 'Signup failed' };
+    } else {
+      // Fallback to localStorage
+      if (users.find(u => u.email === email)) {
+        return { success: false, message: 'Email already registered.' };
+      }
+
+      const newUser: User = {
+        id: Date.now().toString(),
+        name,
+        email,
+        password,
+        role,
+        joinedDate: new Date().toISOString().split('T')[0]
+      };
+
+      setUsers(prev => [...prev, newUser]);
+      setUser(newUser);
+      localStorage.setItem('terra_current_user', JSON.stringify(newUser));
+      return { success: true, message: 'Account created successfully!' };
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (shouldUseSupabase()) {
+      await supabase.auth.signOut();
+    }
     setUser(null);
     localStorage.removeItem('terra_current_user');
   };
 
-  const updateUserRole = (userId: string, role: UserRole) => {
+  const updateUserRole = async (userId: string, role: UserRole) => {
+    if (shouldUseSupabase()) {
+      await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('id', userId);
+    }
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
   };
 
-  const deleteUser = (userId: string) => {
+  const deleteUser = async (userId: string) => {
+    if (shouldUseSupabase()) {
+      // Note: This only deletes the profile, not the auth user
+      // To delete auth user, you need to use Supabase admin API
+      await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+    }
     setUsers(prev => prev.filter(u => u.id !== userId));
   };
 

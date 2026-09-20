@@ -25,9 +25,9 @@ export default function BackToTop() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 left-6 z-40 w-12 h-12 bg-gradient-to-br from-terra-600 to-wine-600 text-white rounded-full shadow-xl shadow-terra-500/30 flex items-center justify-center hover:shadow-2xl transition-shadow"
+          className="fixed bottom-6 left-6 z-40 w-10 h-10 bg-gradient-to-br from-terra-600 to-wine-600 text-white rounded-full shadow-lg shadow-terra-500/30 flex items-center justify-center hover:shadow-xl transition-shadow"
         >
-          <ArrowUp className="w-5 h-5" />
+          <ArrowUp className="w-4 h-4" />
         </motion.button>
       )}
     </AnimatePresence>

@@ -6,6 +6,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
 import OrderTimeline from '../components/OrderTimeline';
+import OrderHistoryChart from '../components/OrderHistoryChart';
+import OrderSummaryTimeline from '../components/OrderSummaryTimeline';
+import LoyaltyDashboard from '../components/LoyaltyDashboard';
+import RecentlyPurchased from '../components/RecentlyPurchased';
+import QuickReorder from '../components/QuickReorder';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
@@ -49,9 +55,12 @@ export default function CustomerDashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Welcome Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+      <Breadcrumbs />
+      
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        {/* Welcome Header */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl sm:text-4xl font-bold text-terra-800">
@@ -95,6 +104,48 @@ export default function CustomerDashboard() {
           </motion.div>
         ))}
       </div>
+
+      {/* Order Analytics */}
+      {orders.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6 mb-10">
+          <OrderHistoryChart 
+            orders={orders.map(o => ({
+              id: o.id,
+              date: o.createdAt,
+              total: o.total,
+              status: o.status
+            }))} 
+          />
+          <OrderSummaryTimeline 
+            orders={orders.map(o => ({
+              id: o.id,
+              date: o.createdAt,
+              total: o.total,
+              itemCount: o.items.length,
+              status: o.status
+            }))} 
+          />
+        </div>
+      )}
+
+      {/* Loyalty Dashboard */}
+      <div className="mb-10">
+        <LoyaltyDashboard
+          points={2450}
+          tier="Gold"
+          totalSpent={totalSpent}
+          totalOrders={orders.length}
+          memberSince={user.joinedDate || '2024-01-01'}
+        />
+      </div>
+
+      {/* Quick Reorder & Recently Purchased */}
+      {pastOrders.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6 mb-10">
+          <QuickReorder />
+          <RecentlyPurchased />
+        </div>
+      )}
 
       {/* Pending Orders */}
       {pendingOrders.length > 0 && (
@@ -249,6 +300,33 @@ export default function CustomerDashboard() {
         </motion.div>
       )}
 
+      {/* Loyalty Program Link */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 rounded-2xl p-6 text-white mb-8 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h3 className="font-serif text-2xl font-bold mb-2">Loyalty Rewards</h3>
+            <p className="text-white/90 mb-4">Earn points on every purchase and unlock exclusive rewards</p>
+            <Link
+              to="/loyalty"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-amber-600 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+            >
+              View Rewards
+            </Link>
+          </div>
+          <div className="hidden sm:block">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
+              <Star className="w-10 h-10" />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Profile Card */}
       <div className="bg-white rounded-2xl border border-terra-100/50 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
@@ -320,6 +398,7 @@ export default function CustomerDashboard() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

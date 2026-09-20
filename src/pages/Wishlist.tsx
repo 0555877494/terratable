@@ -1,9 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import { Heart, ShoppingBag, Trash2, Sparkles } from 'lucide-react';
 import { useStore } from '../contexts/StoreContext';
 import { useToast } from '../contexts/ToastContext';
+import WishlistSharing from '../components/WishlistSharing';
+import ProductComparisonTool from '../components/ProductComparisonTool';
+import ProductCardEnhanced from '../components/ProductCardEnhanced';
+import PriceDropAlerts from '../components/PriceDropAlerts';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function Wishlist() {
   const { wishlist, products, removeFromWishlist, addToCart } = useStore();
@@ -42,53 +47,71 @@ export default function Wishlist() {
     );
   }
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-terra-800 flex items-center gap-3">
-          <Heart className="w-8 h-8 text-wine-500 fill-wine-500" />
-          My Wishlist
-        </h1>
-        <p className="text-terra-500 mt-2">{wishlistProducts.length} saved items</p>
-      </motion.div>
+  const handleAddAllToCart = () => {
+    wishlistProducts.forEach(product => {
+      addToCart(product);
+    });
+    showToast('success', `Added ${wishlistProducts.length} items to cart!`);
+  };
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wishlistProducts.map((product, index) => (
-          <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-2xl border border-terra-100/50 overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
-          >
-            <div className="relative aspect-[4/3]">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-              <button
-                onClick={() => handleRemove(product.id, product.name)}
-                className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm"
+  const totalWishlistValue = wishlistProducts.reduce((sum, p) => sum + p.price, 0);
+
+  return (
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+      <Breadcrumbs />
+      <PriceDropAlerts />
+      
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-4">
+            <div>
+              <h1 className="font-serif text-4xl sm:text-5xl font-bold text-stone-900 dark:text-stone-100 flex items-center gap-3">
+                <Heart className="w-10 h-10 text-rose-500 fill-rose-500" />
+                My Wishlist
+              </h1>
+              <p className="text-stone-600 dark:text-stone-400 mt-2">
+                {wishlistProducts.length} saved items • Total value: <span className="font-bold gradient-text">${totalWishlistValue.toFixed(2)}</span>
+              </p>
+            </div>
+            {wishlistProducts.length > 1 && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAddAllToCart}
+                className="px-6 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg shadow-amber-500/30 hover:shadow-xl transition-all flex items-center gap-2"
               >
-                <Trash2 className="w-4 h-4 text-red-500" />
-              </button>
-            </div>
-            <div className="p-5">
-              <h3 className="font-serif font-semibold text-terra-900 text-lg mb-2">{product.name}</h3>
-              <p className="text-sm text-terra-500 mb-3">{product.origin}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold bg-gradient-to-r from-terra-700 to-wine-700 bg-clip-text text-transparent">
-                  ${product.price.toFixed(2)}
-                </span>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleAddToCart(product)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-terra-600 to-terra-700 text-white rounded-full text-sm font-semibold shadow-lg shadow-terra-500/20 hover:shadow-xl transition-all"
-                >
-                  <ShoppingBag className="w-4 h-4" /> Add to Cart
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+                <ShoppingBag className="w-5 h-5" />
+                Add All to Cart
+              </motion.button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Wishlist Sharing & Comparison */}
+        {wishlistProducts.length >= 2 && (
+          <div className="grid lg:grid-cols-2 gap-6 mb-8">
+            <WishlistSharing />
+            <ProductComparisonTool />
+          </div>
+        )}
+
+        {/* Price Drop Alerts */}
+        {wishlistProducts.length > 0 && (
+          <div className="mb-8">
+            <PriceDropAlerts />
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {wishlistProducts.map((product, index) => (
+            <ProductCardEnhanced
+              key={product.id}
+              product={product}
+              onViewDetails={() => {}}
+              index={index}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
