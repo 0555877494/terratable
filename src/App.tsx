@@ -25,6 +25,11 @@ import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import LiveChatModal from './components/LiveChatModal';
 import OnboardingModal from './components/OnboardingModal';
 import OrderStatusWidget from './components/OrderStatusWidget';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import AbandonedCartRecovery from './components/AbandonedCartRecovery';
+import AdvancedAnalytics from './components/AdvancedAnalytics';
+import CustomerSegmentation from './components/CustomerSegmentation';
+import { registerServiceWorker, requestNotificationPermission } from './lib/serviceWorker';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -83,6 +88,11 @@ function AppRoutes() {
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 400);
     window.addEventListener('scroll', handleScroll);
+    
+    // Register service worker for PWA
+    registerServiceWorker();
+    requestNotificationPermission();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -126,6 +136,8 @@ function AppRoutes() {
       />
       <OnboardingModal />
       <OrderStatusWidget />
+      <PWAInstallPrompt />
+      <AbandonedCartRecovery />
 
       <main className="pt-[48px] pb-12 md:pb-0">
         <Breadcrumbs />
@@ -160,6 +172,16 @@ function AppRoutes() {
           <Route path="/terms" element={<TermsPrivacy />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/analytics" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdvancedAnalytics />
+            </ProtectedRoute>
+          } />
+          <Route path="/customer-segments" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <CustomerSegmentation />
+            </ProtectedRoute>
+          } />
           <Route path="/customer" element={
             <ProtectedRoute allowedRoles={['customer']}>
               <CustomerDashboard />
